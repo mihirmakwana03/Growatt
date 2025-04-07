@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Application Update - {{JOB_TITLE}} Position</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        p {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 15px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p>Dear <strong>{{NAME}}</strong>,</p>
+
+        <p>We sincerely appreciate your time and effort in applying for the <strong>{{JOB_TITLE}}</strong> position at
+            <strong>Growatt Infosystem</strong>.
+            After careful consideration, we regret to inform you that we have selected another candidate for this role.
+        </p>
+
+        <p>We want to emphasize that this decision was not a reflection of your skills or experience.
+            We were truly impressed by your background and encourage you to apply for future opportunities with us.</p>
+
+        <p>If you have any questions, feel free to reach out to us at <a
+                href="mailto:growattinfosystem@gmail.com">growattinfosystem@gmail.com</a> or call <strong>+91 </strong>.
+        </p>
+
+        <p>Thank you again for your interest in joining our team. We wish you all the best in your job search and future
+            endeavors.</p>
+
+        <p class="footer">Best Regards,<br><strong>Team Growatt Infosystem</strong></p>
+    </div>
+</body>
+
+</html>

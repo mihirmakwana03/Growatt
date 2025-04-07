@@ -1,0 +1,8 @@
+.nav-link.active {
+    font-weight: bold;
+    color: #00a29e; /* Turquoise blue from the logo */
+    background-color: #fef5e7; /* Light orange background for contrast */
+    border-left: 4px solid #f47a20; /* Orange border to match the logo */
+    border-radius: 0;
+  }
+  

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Congratulations! You’re Selected</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        p {
+            color: #333;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .button,
+        #button {
+            display: inline-block;
+            background-color: green;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 15px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p>Dear <strong>{{NAME}}</strong>,</p>
+        <p>We are thrilled to inform you that you have been selected for the position of <strong>{{JOB_TITLE}}</strong>
+            at <strong>Growatt Infosystem</strong>. Your skills and expertise truly impressed us, and we are excited to
+            welcome you in company.</p>
+
+        <p><strong>Next Steps:</strong></p>
+        <p>Please review the attached offer letter and confirm your acceptance by replying to this email or clicking the
+            button below.</p>
+
+        <a href="mailto:hr@growattinfosystem.com?subject=Offer Acceptance" class="button" id="button">
+            Accept Offer
+        </a>
+
+        <p>If you have any questions, feel free to reach out to us at <a
+                href="mailto:growattinfosystem@gmail.com">growattinfosystem@gmail.com</a> or call <strong>+91 </strong>.
+        </p>
+
+        <p class="footer">Best Regards,<br>Team Growatt Infosystem</p>
+    </div>
+</body>
+
+</html>
