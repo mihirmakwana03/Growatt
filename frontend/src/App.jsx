@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import Cursor from './components/cursor';
+import Cursor from './components/cursor';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -14,7 +14,7 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
-        {/* <Cursor /> */}
+        <Cursor />
         <Navbar />
         <main className="flex-grow">
           <Routes>
