@@ -21,7 +21,11 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <img src="./assets/logo.png" alt="Growatt Logo" className="h-56 w-auto" />
+              <img 
+              src="./assets/logo-nav.png" 
+              alt="Growatt Logo" 
+              className="h-auto max-h-12 w-auto object-contain" 
+              />
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-8">
@@ -29,11 +33,10 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`${
-                  location.pathname === item.href
+                className={`${location.pathname === item.href
                     ? 'text-primary'
                     : 'text-white hover:text-primary'
-                } transition-colors duration-200`}
+                  } transition-colors duration-200`}
               >
                 {item.name}
               </Link>
@@ -58,11 +61,10 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`${
-                  location.pathname === item.href
+                className={`${location.pathname === item.href
                     ? 'text-primary'
                     : 'text-white hover:text-primary'
-                } block px-3 py-2 text-base font-medium`}
+                  } block px-3 py-2 text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 {item.name}

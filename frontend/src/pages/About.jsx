@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { team } from '../data/team';
 import { Users, Target, Award, Clock } from 'lucide-react';
 
 const stats = [
@@ -26,6 +26,25 @@ const stats = [
 ];
 
 export default function About() {
+  const [teamMembers, setTeamMembers] = useState([]);
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/team');
+        if (!response.ok) {
+          throw new Error('Failed to fetch team members');
+        }
+        const data = await response.json();
+        setTeamMembers(data);
+      } catch (error) {
+        console.error('Error fetching team members:', error);
+      }
+    };
+
+    fetchTeamMembers();
+  }, []);
+
   return (
     <div className="pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +55,8 @@ export default function About() {
           className="text-center mb-16"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient">About</span></h1>
+            <span className="text-gradient">About</span>
+          </h1>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
             Growatt Infosystem
           </h1>
@@ -64,104 +84,104 @@ export default function About() {
         </div>
 
         {/* Leadership Section */}
-        <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Our Leadership
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                className="glass p-8 rounded-xl"
-              >
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-40 h-40 rounded-full object-cover"
-                  />
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{member.name}</h3>
-                    <p className="text-primary mb-4">{member.position}</p>
-                    <p className="text-gray-300 mb-4">{member.bio}</p>
-                    <div className="flex gap-4">
-                      {member.social.map((link, i) => (
-                        <a
-                          key={i}
-                          href={link.url}
-                          className="text-gray-300 hover:text-primary transition-colors"
-                        >
-                          {link.platform}
-                        </a>
-                      ))}
-                    </div>
+        <div className="mb-20"></div>
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Our Leadership
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={member._id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+              className="glass p-8 rounded-xl"
+            >
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <img
+                  crossOrigin="anonymous"
+                  src={`http://localhost:5000/membersImg/${member.image}`}
+                  alt={member.name}
+                  className="w-40 h-40 rounded-full object-cover"
+                />
+                <div>
+                  <h3 className="text-2xl font-bold mb-2">{member.name}</h3>
+                  <p className="text-primary mb-4">{member.designation}</p>
+                  {/* <p className="text-gray-300 mb-4">{member.bio}</p> */}
+                  <div className="flex gap-4">
+                    {/* {member.social.map((link, i) => (
+                      <a
+                        key={i}
+                        href={link.url}
+                        className="text-gray-300 hover:text-primary transition-colors"
+                      >
+                        {link.platform}
+                      </a>
+                    ))} */}
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
-
-        {/* Company Values */}
-        <div className="text-center mb-20">
-          <h2 className="text-3xl font-bold mb-12">Our Values</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="glass p-8 rounded-xl"
-            >
-              <h3 className="text-xl font-bold mb-4">Innovation</h3>
-              <p className="text-gray-300">
-                We constantly push boundaries and explore new creative solutions.
-              </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="glass p-8 rounded-xl"
-            >
-              <h3 className="text-xl font-bold mb-4">Excellence</h3>
-              <p className="text-gray-300">
-                We strive for perfection in every project we undertake.
-              </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="glass p-8 rounded-xl"
-            >
-              <h3 className="text-xl font-bold mb-4">Collaboration</h3>
-              <p className="text-gray-300">
-                We work closely with our clients to achieve their vision.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Contact CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <h2 className="text-3xl font-bold mb-6">Ready to Work Together?</h2>
-          <p className="text-gray-300 mb-8">
-            Let's create something amazing for your brand.
-          </p>
-          <a
-            href="/contact"
-            className="button-gradient px-8 py-3 rounded-lg font-medium inline-block"
-          >
-            Get in Touch
-          </a>
-        </motion.div>
       </div>
+
+      {/* Company Values */}
+      <div className="text-center mb-20 mt-20">
+        <h2 className="text-3xl font-bold mb-12">Our Values</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="glass p-8 rounded-xl"
+          >
+            <h3 className="text-xl font-bold mb-4">Innovation</h3>
+            <p className="text-gray-300">
+              We constantly push boundaries and explore new creative solutions.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="glass p-8 rounded-xl"
+          >
+            <h3 className="text-xl font-bold mb-4">Excellence</h3>
+            <p className="text-gray-300">
+              We strive for perfection in every project we undertake.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="glass p-8 rounded-xl"
+          >
+            <h3 className="text-xl font-bold mb-4">Collaboration</h3>
+            <p className="text-gray-300">
+              We work closely with our clients to achieve their vision.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Contact CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <h2 className="text-3xl font-bold mb-6">Ready to Work Together?</h2>
+        <p className="text-gray-300 mb-8">
+          Let's create something amazing for your brand.
+        </p>
+        <a
+          href="/contact"
+          className="button-gradient px-8 py-3 rounded-lg font-medium inline-block"
+        >
+          Get in Touch
+        </a>
+      </motion.div>
     </div>
   );
 }

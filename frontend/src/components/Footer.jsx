@@ -28,7 +28,7 @@ export default function Footer() {
                 <h3 className="text-xl font-bold mb-4">Growatt Infosystem</h3>
                 <div className="space-y-3">
                   <p className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
+                  <MapPin className="w-9 h-9" />
                   <a
                     href="https://maps.app.goo.gl/iVuTrZzhYArCbiVM9"
                     target="_blank"

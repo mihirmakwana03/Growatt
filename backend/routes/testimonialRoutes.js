@@ -24,13 +24,21 @@ router.get("/", async (req, res) => {
     }
 });
 
-// ✅ Delete a testimonial
-router.delete("/:id", async (req, res) => {
+// ✅ Delete multiple testimonials
+router.delete("/", async (req, res) => {  // ✅ Changed from app.delete to router.delete
     try {
-        await Testimonial.findByIdAndDelete(req.params.id);
-        res.json({ success: true });
+        const { ids } = req.body;
+
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ error: "No valid IDs provided for deletion." });
+        }
+
+        await Testimonial.deleteMany({ _id: { $in: ids } });
+
+        res.status(200).json({ message: "Testimonials deleted successfully." });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete testimonial" });
+        console.error("❌ Error deleting testimonials:", error);
+        res.status(500).json({ error: "Server error while deleting testimonials." });
     }
 });
 

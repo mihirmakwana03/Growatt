@@ -6,11 +6,16 @@ const fs = require("fs");
 
 const router = express.Router();
 
+// ✅ Ensure upload folder exists
+const uploadDir = path.resolve(__dirname, "../uploadspdf");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // ✅ Set up Multer for file storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadPath = path.resolve(__dirname, "../uploadspdf");
-        cb(null, uploadPath);
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + "-" + file.originalname);
@@ -33,16 +38,26 @@ router.post("/", upload.single("resume"), async (req, res) => {
             return res.status(400).json({ error: "Name and Email are required." });
         }
 
+        // ✅ Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(req.body.email)) {
+            return res.status(400).json({ error: "Invalid email format." });
+        }
+
         const newApplication = new Application({
             jobId: req.body.jobId,
             jobTitle: req.body.jobTitle,
             name: req.body.name,
             email: req.body.email,
+            experience: Number(req.body.experience),  // ✅ Convert to Number
+            twelvethPercentage: Number(req.body.twelvethPercentage),  // ✅ Convert to Number
+            bachelorsDegree: Number(req.body.bachelorsDegree),  // ✅ Convert to Number
             resume: `/uploadspdf/${req.file.filename}`,
         });
 
         await newApplication.save();
         res.status(201).json({ message: "✅ Application submitted successfully!" });
+
     } catch (error) {
         console.error("❌ Error submitting application:", error);
         res.status(500).json({ error: "Server error", details: error.message });
@@ -70,20 +85,18 @@ router.delete("/:id", async (req, res) => {
             return res.status(404).json({ error: "Application not found" });
         }
 
-        // ✅ Construct file path safely
-        if (application.resume) {
-            const filePath = path.resolve(__dirname, "../uploadspdf", path.basename(application.resume));
+        // ✅ Safe file path deletion
+        const filePath = path.resolve(__dirname, "..", application.resume);
 
-            try {
-                if (fs.existsSync(filePath)) {
-                    fs.unlinkSync(filePath);
-                    console.log("✅ File deleted successfully:", filePath);
-                } else {
-                    console.warn("⚠️ File not found, skipping deletion:", filePath);
-                }
-            } catch (fileError) {
-                console.error("❌ Error deleting file:", fileError);
+        try {
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+                console.log("✅ Resume file deleted:", filePath);
+            } else {
+                console.warn("⚠️ Resume file not found, skipping deletion:", filePath);
             }
+        } catch (fileError) {
+            console.error("❌ Error deleting resume file:", fileError);
         }
 
         // ✅ Remove from DB

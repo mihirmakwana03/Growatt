@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import ReCAPTCHA from 'react-google-recaptcha';
-import { Phone, Mail, MapPin, Clock, Facebook, Twitter, Instagram, Linkedin, Upload, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Facebook, Twitter, Instagram, Linkedin, Send } from 'lucide-react';
+// import WhatsApp from "../components/WhatsApp";
 
 const socialLinks = [
     { icon: Facebook, href: 'https://www.facebook.com/Growattinfo/', label: 'Facebook' },
@@ -38,35 +38,20 @@ const contactInfo = [
     },
 ];
 
-const mapContainerStyle = {
-    width: '100%',
-    height: '400px',
-};
-
-const center = {
-    lat: 19.0760,
-    lng: 72.8777,
-};
-
 export default function Contact() {
     const [formData, setFormData] = useState({
-        name: '',
+        fullName: '',
         email: '',
         phone: '',
-        subject: '',
         message: '',
-        attachment: null,
     });
     const [recaptchaValue, setRecaptchaValue] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [responseMessage, setResponseMessage] = useState('');
     const { ref, inView } = useInView({
         threshold: 0.1,
         triggerOnce: true,
     });
-
-    const handleFileChange = (event) => {
-        const file = event.target.files?.[0] || null;
-        setFormData(prev => ({ ...prev, attachment: file }));
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -74,8 +59,41 @@ export default function Contact() {
             alert('Please complete the reCAPTCHA verification');
             return;
         }
-        // Handle form submission
-        console.log(formData);
+
+        setLoading(true);
+
+        try {
+            const response = await fetch("http://localhost:5000/contact/submitcontact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    fullName: formData.fullName,
+                    email: formData.email,
+                    phone: formData.phone,
+                    message: formData.message,
+                    captcha: recaptchaValue,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setResponseMessage("✅ Form submitted successfully!");
+                setFormData({
+                    fullName: '',
+                    email: '',
+                    phone: '',
+                    message: '',
+                });
+            } else {
+                setResponseMessage("❌ Error: " + data.error);
+            }
+        } catch (error) {
+            console.error("❌ Submission error:", error);
+            setResponseMessage("❌ Server error. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const onRecaptchaChange = useCallback((value) => {
@@ -113,8 +131,8 @@ export default function Contact() {
                                     type="text"
                                     required
                                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    value={formData.fullName}
+                                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                 />
                             </div>
                             <div>
@@ -137,15 +155,6 @@ export default function Contact() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2">Subject</label>
-                                <input
-                                    type="text"
-                                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                                    value={formData.subject}
-                                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                />
-                            </div>
-                            <div>
                                 <label className="block text-sm font-medium mb-2">Message *</label>
                                 <textarea
                                     required
@@ -155,37 +164,24 @@ export default function Contact() {
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                 ></textarea>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Attachment</label>
-                                <div className="flex items-center justify-center w-full">
-                                    <label className="w-full flex flex-col items-center px-4 py-6 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10">
-                                        <Upload className="w-8 h-8 mb-2" />
-                                        <span className="text-sm">Click to upload file</span>
-                                        <input type="file" className="hidden" onChange={handleFileChange} />
-                                    </label>
-                                </div>
-                                {formData.attachment && (
-                                    <p className="mt-2 text-sm text-gray-300">
-                                        Selected file: {formData.attachment.name}
-                                    </p>
-                                )}
-                            </div>
                             <ReCAPTCHA
-                                sitekey="your-recaptcha-site-key"
+                                sitekey="6LdtrvgqAAAAABmj3YRQhv7d-YzEOjkts7TyH9gR"
                                 onChange={onRecaptchaChange}
                                 theme="dark"
                             />
                             <button
                                 type="submit"
                                 className="button-gradient w-full py-3 px-6 rounded-lg font-semibold flex items-center justify-center gap-2"
+                                disabled={loading}
                             >
-                                <Send className="w-5 h-5" />
-                                Send Message
+                                {loading ? "Submitting..." : <><Send className="w-5 h-5" /> Send Message</>}
                             </button>
                         </form>
+                        {responseMessage && <p className="mt-3 text-center">{responseMessage}</p>}
                     </motion.div>
 
                     {/* Contact Information */}
+                    {/* Contact Info and Social Links */}
                     <motion.div
                         ref={ref}
                         initial={{ opacity: 0, x: 20 }}
@@ -269,8 +265,9 @@ export default function Contact() {
             </div>
 
             {/* WhatsApp Button */}
-            <a
-                href="https://wa.me/919558198701?text=Hi,%20I'm%20interested%20in%20your%20services"
+            {/* <WhatsApp /> */}
+            {/* <a
+                href="https://wa.me/918155808720?text=Hello%2C%20I%20have%20visited%20your%20website%20and%20am%20interested%20in%20your%20services.%20Could%20you%20please%20provide%20me%20with%20more%20information%3F"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors animate-pulse"
@@ -281,9 +278,7 @@ export default function Contact() {
                     alt="WhatsApp"
                     className="w-8 h-8"
                 />
-            </a>
+            </a> */}
         </div>
     );
 }
-
-//export default Contact

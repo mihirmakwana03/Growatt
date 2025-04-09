@@ -5,7 +5,10 @@ const applicationSchema = new mongoose.Schema({
     jobTitle: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: true },
-    resume: { type: String, required: true }, // ✅ Store file path as a string
+    experience: { type: Number, required: true },
+    twelvethPercentage: { type: Number, required: true },
+    bachelorsDegree: { type: Number, required: true },
+    resume: { type: String, required: true }, // Store file path as a string
 }, { timestamps: true });
 
 module.exports = mongoose.model("Application", applicationSchema);

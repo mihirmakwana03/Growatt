@@ -27,9 +27,9 @@ router.get("/", async (req, res) => {
 // ✅ Create a new career (POST Route)
 router.post("/", async (req, res) => {
     try {
-        const { jobTitle, shortDescription, jobDescription, jobRequirements, jobLocation, jobType, jobEndDate } = req.body;
+        const { jobTitle, shortDescription, jobLocation, jobType, jobEndDate } = req.body;
 
-        if (!jobTitle || !jobDescription || !jobLocation || !jobType) {
+        if (!jobTitle || !shortDescription || !jobLocation || !jobType || !jobEndDate) {
             return res.status(400).json({ message: "Missing required fields!" });
         }
 
@@ -45,8 +45,6 @@ router.post("/", async (req, res) => {
         const newCareer = new Career({
             jobTitle,
             shortDescription,
-            jobDescription,
-            jobRequirements,
             jobLocation,
             jobType,
             jobEndDate: formattedEndDate,
@@ -90,7 +88,20 @@ router.post("/applications", async (req, res) => {
     }
 });
 
-// ✅ Delete a career by ID
+// ✅ DELETE EXPIRED CAREERS (Move this route ABOVE "/:id")
+router.delete("/delete-expired", async (req, res) => {
+    try {
+        const now = new Date();
+        const result = await Career.deleteMany({ jobEndDate: { $lt: now } });
+
+        res.status(200).json({ message: `${result.deletedCount} expired careers deleted.` });
+    } catch (error) {
+        console.error("❌ Error deleting expired careers:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+// ✅ DELETE a career by ID (Should be the last DELETE route)
 router.delete("/:id", async (req, res) => {
     try {
         const career = await Career.findByIdAndDelete(req.params.id);

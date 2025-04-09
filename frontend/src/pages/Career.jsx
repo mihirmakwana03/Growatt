@@ -1,51 +1,8 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import ReCAPTCHA from 'react-google-recaptcha';
-import { Briefcase, Users, MapPin, Clock, Upload, Building, Star, Trophy, Heart } from 'lucide-react';
-
-const jobOpenings = [
-  {
-    id: 'senior-react-dev',
-    title: 'Senior React Developer',
-    department: 'Engineering',
-    location: 'Remote',
-    type: 'Full-time',
-    description: 'We are looking for an experienced React developer to join our team and help build amazing web applications.',
-    requirements: [
-      'Minimum 5 years of experience with React',
-      'Strong understanding of modern JavaScript',
-      'Experience with TypeScript',
-      'Knowledge of state management solutions',
-    ],
-    responsibilities: [
-      'Develop new features for our web applications',
-      'Optimize application performance',
-      'Mentor junior developers',
-      'Contribute to technical architecture decisions',
-    ],
-  },
-  {
-    id: 'ui-ux-designer',
-    title: 'UI/UX Designer',
-    department: 'Design',
-    location: 'Hybrid',
-    type: 'Full-time',
-    description: 'Join our design team to create beautiful and intuitive user interfaces for our clients.',
-    requirements: [
-      'Minimum 3 years of UI/UX design experience',
-      'Proficiency in Figma',
-      'Strong portfolio showcasing web/mobile designs',
-      'Understanding of user-centered design principles',
-    ],
-    responsibilities: [
-      'Create user-centered designs',
-      'Conduct user research',
-      'Create wireframes and prototypes',
-      'Collaborate with developers',
-    ],
-  },
-];
+import { MapPin, Clock, Upload, Building, Star, Trophy, Heart } from 'lucide-react';
 
 const benefits = [
   {
@@ -86,6 +43,9 @@ const testimonials = [
 ];
 
 export default function Career() {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
   const [applicationData, setApplicationData] = useState({
     name: '',
@@ -94,10 +54,28 @@ export default function Career() {
     coverLetter: null,
   });
   const [recaptchaValue, setRecaptchaValue] = useState(null);
-  const { ref, inView } = useInView({
+  useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+
+  useEffect(() => {
+    fetch('http://localhost:5000/careers', { mode: 'cors' })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch jobs');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setJobs(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
 
   const handleFileChange = (type) => (event) => {
     const file = event.target.files?.[0] || null;
@@ -106,12 +84,59 @@ export default function Career() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!recaptchaValue) {
-      alert('Please complete the reCAPTCHA verification');
+
+    if (
+      !applicationData.name ||
+      !applicationData.email ||
+      !applicationData.resume ||
+      applicationData.experience === "" ||
+      applicationData.twelvethPercentage === "" ||
+      applicationData.bachelorsDegree === ""
+    ) {
+      alert("All fields are required!");
       return;
     }
-    // Handle application submission
-    console.log(applicationData);
+
+    if (!recaptchaValue) {
+      alert("Please complete the reCAPTCHA verification");
+      return;
+    }
+
+    const applicationFormData = new FormData();
+    applicationFormData.append("jobId", selectedJob._id);
+    applicationFormData.append("jobTitle", selectedJob.jobTitle);
+    applicationFormData.append("name", applicationData.name);
+    applicationFormData.append("email", applicationData.email);
+    applicationFormData.append("experience", applicationData.experience);
+    applicationFormData.append("twelvethPercentage", applicationData.twelvethPercentage);
+    applicationFormData.append("bachelorsDegree", applicationData.bachelorsDegree);
+    applicationFormData.append("resume", applicationData.resume);
+    applicationFormData.append("captcha", recaptchaValue); // ✅ Include reCAPTCHA token
+
+    try {
+      const response = await fetch("http://localhost:5000/applications", {
+        method: "POST",
+        body: applicationFormData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to submit application");
+
+      alert("Application submitted successfully!");
+
+      setApplicationData({
+        name: "",
+        email: "",
+        resume: null,
+        experience: "",
+        twelvethPercentage: "",
+        bachelorsDegree: "",
+      });
+
+      setSelectedJob(null);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -181,26 +206,25 @@ export default function Career() {
         {/* Job Listings */}
         <div className="mb-20">
           <h2 className="text-3xl font-bold text-center mb-12">Open Positions</h2>
+          {loading && <p className="text-center text-gray-300">Loading jobs...</p>}
+          {error && <p className="text-center text-red-500">{error}</p>}
           <div className="grid gap-6">
-            {jobOpenings.map((job) => (
+            {jobs.map((job) => (
               <motion.div
-                key={job.id}
+                key={job._id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 className="glass p-6 rounded-xl"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-xl font-bold mb-2">{job.title}</h3>
+                    <h3 className="text-xl font-bold mb-2">{job.jobTitle}</h3>
                     <div className="flex flex-wrap gap-4 text-sm text-gray-300">
                       <span className="flex items-center gap-1">
-                        <Briefcase className="w-4 h-4" /> {job.department}
+                        <MapPin className="w-4 h-4" /> {job.jobLocation}
                       </span>
                       <span className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" /> {job.location}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" /> {job.type}
+                        <Clock className="w-4 h-4" /> {job.jobType}
                       </span>
                     </div>
                   </div>
@@ -224,145 +248,120 @@ export default function Career() {
               animate={{ opacity: 1, scale: 1 }}
               className="glass p-8 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
-              <h2 className="text-2xl font-bold mb-6">Apply for {selectedJob.title}</h2>
-
+              <h2 className="text-2xl font-bold mb-6">Apply for {selectedJob.jobTitle}</h2>
               <div className="mb-8">
                 <h3 className="font-bold mb-2">Job Description</h3>
-                <p className="text-gray-300 mb-4">{selectedJob.description}</p>
-
-                <h3 className="font-bold mb-2">Requirements</h3>
-                <ul className="list-disc list-inside text-gray-300 mb-4">
-                  {selectedJob.requirements.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
-
-                <h3 className="font-bold mb-2">Responsibilities</h3>
-                <ul className="list-disc list-inside text-gray-300">
-                  {selectedJob.responsibilities.map((resp, index) => (
-                    <li key={index}>{resp}</li>
-                  ))}
-                </ul>
+                <p className="text-gray-300 mb-4">{selectedJob.shortDescription}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
+                    value={applicationData.name}
+                    onChange={(e) => setApplicationData({ ...applicationData, name: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
+                    value={applicationData.email}
+                    onChange={(e) => setApplicationData({ ...applicationData, email: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Experience (in years) *</label>
+                  <input
+                    type="number"
+                    required
+                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
+                    value={applicationData.experience || ''}
+                    onChange={(e) => setApplicationData({ ...applicationData, experience: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">12th Percentage *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
+                    value={applicationData.twelvethPercentage || ''}
+                    onChange={(e) => setApplicationData({ ...applicationData, twelvethPercentage: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Bachelor's Percentage *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
+                    value={applicationData.bachelorsDegree || ''}
+                    onChange={(e) => setApplicationData({ ...applicationData, bachelorsDegree: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Resume (PDF/DOC) *</label>
+                  <div className="flex items-center justify-center w-full">
+                    <label className="w-full flex flex-col items-center px-4 py-6 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10">
+                      <Upload className="w-8 h-8 mb-2" />
+                      <span className="text-sm">Click to upload resume</span>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange('resume')}
+                        required
+                      />
+                    </label>
+                  </div>
+                  {applicationData.resume && (
+                    <p className="mt-2 text-sm text-gray-300">
+                      Selected file: {applicationData.resume.name}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-4 mb-4">
+                  <ReCAPTCHA
+                    sitekey="6LdtrvgqAAAAABmj3YRQhv7d-YzEOjkts7TyH9gR"
+                    onChange={(value) => setRecaptchaValue(value)}
+                    theme="dark"
+                  />
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    className="button-gradient flex-1 py-3 rounded-lg font-medium"
+                  >
+                    Submit Application
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedJob(null)}
+                    className="px-6 py-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </form>
             </motion.div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Full Name *</label>
-              <input
-                type="text"
-                required
-                className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                value={applicationData.name}
-                onChange={(e) => setApplicationData({ ...applicationData, name: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Email Address *</label>
-              <input
-                type="email"
-                required
-                className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                value={applicationData.email}
-                onChange={(e) => setApplicationData({ ...applicationData, email: e.target.value })}
-              />
-              <div>
-                <label className="block text-sm font-medium mb-2">Resume (PDF/DOC) *</label>
-                <div className="flex items-center justify-center w-full">
-                  <label className="w-full flex flex-col items-center px-4 py-6 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10">
-                    <Upload className="w-8 h-8 mb-2" />
-                    <span className="text-sm">Click to upload resume</span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange('resume')}
-                      required
-                    />
-                  </label>
-                </div>
-                {applicationData.resume && (
-                  <p className="mt-2 text-sm text-gray-300">
-                    Selected file: {applicationData.resume.name}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Cover Letter (Optional)</label>
-                <div className="flex items-center justify-center w-full">
-                  <label className="w-full flex flex-col items-center px-4 py-6 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10">
-                    <Upload className="w-8 h-8 mb-2" />
-                    <span className="text-sm">Click to upload cover letter</span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handleFileChange('coverLetter')}
-                    />
-                  </label>
-                </div>
-                {applicationData.coverLetter && (
-                  <p className="mt-2 text-sm text-gray-300">
-                    Selected file: {applicationData.coverLetter.name}
-                  </p>
-                )}
-              </div>
-
-              <ReCAPTCHA
-                sitekey="your-recaptcha-site-key"
-                onChange={(value) => setRecaptchaValue(value)}
-                theme="dark"
-              />
-
-              <div className="flex gap-4">
-                <button
-                  type="submit"
-                  className="button-gradient flex-1 py-3 rounded-lg font-medium"
-                >
-                  Submit Application
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedJob(null)}
-                  className="px-6 py-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-
-              {/* Work Environment Photos */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <motion.img
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  src="https://images.unsplash.com/photo-1497366216548-37526070297c"
-                  alt="Office space"
-                  className="rounded-xl w-full h-64 object-cover"
-                />
-                <motion.img
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4"
-                  alt="Team collaboration"
-                  className="rounded-xl w-full h-64 object-cover"
-                />
-                <motion.img
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c"
-                  alt="Team meeting"
-                  className="rounded-xl w-full h-64 object-cover"
-                />
-              </div>
-            </div>
-          </div >
+          </div>
         )}
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

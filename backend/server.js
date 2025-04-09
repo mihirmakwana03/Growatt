@@ -9,9 +9,11 @@ const helmet = require("helmet");
 const emailRoutes = require("./routes/emailRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const portfolioRoutes = require("./routes/portfolioRoutes");
+const careerRoutes = require("./routes/careerRoutes");
 const applicationRoutes = require("./routes/applications");
 const customerRoutes = require("./routes/customerRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
+const teamRoutes = require("./routes/teamRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -36,7 +38,18 @@ mongoose
 
 // ✅ Middleware
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({
+    origin: function (origin, callback) {
+      const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  }));
+  
 app.use(helmet());
 
 // ✅ Session Middleware (Admin Authentication)
@@ -59,7 +72,7 @@ app.use(
 // ✅ Routes
 app.use("/admin", require("./routes/adminRoutes")); // Admin login/logout
 app.use("/applications", applicationRoutes);
-app.use("/careers", require("./routes/careerRoutes"));
+app.use("/careers", (careerRoutes));
 app.use("/portfolio", portfolioRoutes);
 app.use("/uploadspdf", express.static(path.join(__dirname, "uploadspdf")));
 app.use("/email", emailRoutes);  // ✅ Mount email routes
@@ -67,6 +80,8 @@ app.use("/contact", contactRoutes);  // ✅ Mount contact routes
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
 app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);
+app.use('/membersImg', express.static(path.join(__dirname, 'membersImg')));
+app.use("/team", teamRoutes);
 
 app.get("/", (req, res) => {
     res.send("🚀 Server is running!");

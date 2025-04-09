@@ -8,26 +8,26 @@ const fs = require("fs");
 router.post("/send", async (req, res) => {
     console.log("📩 Email API called with data:", req.body);
 
-    const { to, subject, name, jobTitle, selection } = req.body;
+    const { to, subject, name, jobTitle } = req.body;
 
-    if (!to || !subject || !name || !jobTitle || !selection) {
-        console.error("❌ Missing required fields:", { to, subject, name, jobTitle, selection });
+    if (!to || !subject || !name || !jobTitle) {
+        console.error("❌ Missing required fields:", { to, subject, name, jobTitle });
         return res.status(400).json({ error: "❌ Missing required fields!" });
     }
 
     let emailTemplatePath;
-    if (selection === "selected") {
+    if (subject === "selected") {
         emailTemplatePath = path.join(__dirname, '../templates/selected.html');
-    } else if (selection === "unselected") {
+    } else if (subject === "unselected") {
         emailTemplatePath = path.join(__dirname, '../templates/unselected.html');
     } else {
-        return res.status(400).json({ error: "❌ Invalid selection!" });
+        return res.status(400).json({ error: "❌ Invalid subject!" });
     }
     let emailTemplate = fs.readFileSync(emailTemplatePath, 'utf8');
     emailTemplate = emailTemplate.replace('{{NAME}}', name);
     emailTemplate = emailTemplate.replace('{{JOB_TITLE}}', jobTitle);
 
-    if (selection === "unselected") {
+    if (subject === "unselected") {
         emailTemplate = emailTemplate.replace('{{JOB_TITLE}}', jobTitle);
     }
 
@@ -48,12 +48,6 @@ router.post("/send", async (req, res) => {
         to,
         subject,
         html: emailTemplate,
-        // attachments: [
-        //     {
-        //         filename: "Offer_Letter.pdf",
-        //         path: pdfPath,
-        //         contentType: "application/pdf"
-        //     }]
     };
 
     try {

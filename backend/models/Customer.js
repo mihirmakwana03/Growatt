@@ -7,7 +7,7 @@ const customerSchema = new mongoose.Schema({
   service: {
     type: String,
     required: true,
-    enum: ["Logo Design", "Website Development", "Digital Marketing"],
+    enum: ["Logo Design", "Brand Identity", "Packaging Design", "Business Card Design", "Letterheads", "Label Design", "Flex Design", "Catalog Design", "Brochure Design", "Banner Design"],
   },
   datetime: { type: Date, required: true },
 });
