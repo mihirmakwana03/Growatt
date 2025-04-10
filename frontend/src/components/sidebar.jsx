@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/logo-nav.png";
 import "./sidebar.css";
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { GiAstronautHelmet } from "react-icons/gi";
@@ -13,96 +13,134 @@ import { RiTeamFill } from "react-icons/ri";
 
 const Sidebar = () => {
   return (
-    <div
-      className="d-flex flex-column flex-shrink-0 p-3 bg-light"
-      style={{ width: "250px", height: "100vh" }}
-    >
-      <NavLink
-        to="/"
-        className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none"
-      >
-          <img src={Logo} className="img-fluid" alt="logo" />
+    <div className="flex flex-col w-64 h-screen p-4 bg-gray-100 dark:bg-gray-900">
+      {/* Logo Section */}
+      <NavLink to="/" className="flex items-center mb-6">
+        <img src={Logo} alt="Logo" className="h-10 w-auto" />
       </NavLink>
-      <hr />
-      <ul className="nav nav-pills flex-column mb-auto">
-        <li className="nav-item">
+
+      <hr className="border-gray-300 dark:border-gray-700 mb-4" />
+
+      {/* Navigation Links */}
+      <ul className="flex flex-col space-y-2">
+        <li>
           <NavLink
             to="/admin/dashboard"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <RiDashboardHorizontalFill /> Dashboard
+            <RiDashboardHorizontalFill className="mr-2" />
+            <span>Dashboard</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/portfolio"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <TfiBriefcase /> Portfolio
+            <TfiBriefcase className="mr-2" />
+            <span>Portfolio</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/career"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <GiAstronautHelmet /> Career
+            <GiAstronautHelmet className="mr-2" />
+            <span>Career</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/team"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <RiTeamFill /> Team Members
+            <RiTeamFill className="mr-2" />
+            <span>Team Members</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/inquiry"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <SiGooglebigquery /> Inquiry
+            <SiGooglebigquery className="mr-2" />
+            <span>Inquiry</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/application"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <MdEmail /> Applications
+            <MdEmail className="mr-2" />
+            <span>Applications</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/customerform"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <BsPersonPlusFill /> Customer Form
+            <BsPersonPlusFill className="mr-2" />
+            <span>Customer Form</span>
           </NavLink>
         </li>
         <li>
           <NavLink
             to="/admin/testimonials"
             className={({ isActive }) =>
-              `nav-link link-white ${isActive ? "active" : ""}`
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
             }
           >
-            <MdOutlineReviews /> Testimonials
+            <MdOutlineReviews className="mr-2" />
+            <span>Testimonials</span>
           </NavLink>
         </li>
       </ul>

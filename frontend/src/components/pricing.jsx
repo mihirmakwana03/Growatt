@@ -1,5 +1,5 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const pricingPlans = [
     {
@@ -21,8 +21,8 @@ const pricingPlans = [
 
 const Pricing = () => {
     return (
-        <div className="container py-5">
-            <h1 className="text-center fw-bold mb-4 text-primary">Pricing Plans</h1>
+        <div className="container mx-auto px-4 py-12">
+            <h1 className="text-3xl font-bold text-center mb-8 text-blue-600">Pricing Plans</h1>
             <div className="row justify-content-center">
                 {pricingPlans.map((plan, index) => (
                     <div key={index} className="col-md-4">

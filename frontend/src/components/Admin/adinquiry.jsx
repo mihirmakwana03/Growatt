@@ -31,8 +31,13 @@ function AdInquiry() {
     // Open delete confirmation modal
     const openDeleteModal = (id) => {
         setSelectedContact(id);
-        const deleteModal = new window.bootstrap.Modal(document.getElementById("deleteModal"));
-        deleteModal.show();
+        document.getElementById("deleteModal").classList.remove("hidden");
+    };
+
+    // Close delete confirmation modal
+    const closeDeleteModal = () => {
+        setSelectedContact(null);
+        document.getElementById("deleteModal").classList.add("hidden");
     };
 
     // Delete a contact by ID
@@ -50,80 +55,91 @@ function AdInquiry() {
 
             // Remove deleted contact from state
             setContacts(contacts.filter((contact) => contact._id !== selectedContact));
-            setSelectedContact(null);
-
-            // Hide modal after deletion
-            const deleteModal = window.bootstrap.Modal.getInstance(document.getElementById("deleteModal"));
-            deleteModal.hide();
+            closeDeleteModal();
         } catch (error) {
             console.error("Error deleting contact:", error);
         }
     };
 
     return (
-        <div className="container mt-5">
-            <h1 className="text-center fw-bold text-warning">Contact Submissions</h1>
-            <hr />
+        <div className="container mx-auto px-4 mt-5">
+            <h1 className="text-center text-2xl font-bold text-yellow-500">Contact Submissions</h1>
+            <hr className="my-4" />
 
             {/* ✅ Loading Spinner */}
             {loading && (
                 <div className="text-center mt-3">
-                    <div className="spinner-border text-primary" role="status"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             )}
 
             {/* ✅ No Data Found */}
             {!loading && contacts.length === 0 && (
-                <p className="text-muted text-center">No contact submissions found.</p>
+                <p className="text-gray-500 text-center">No contact submissions found.</p>
             )}
 
             {/* ✅ Contact Cards */}
-            <div className="row">
-                {contacts.map((contact, index) => (
-                    <div className="col-lg-4 col-md-6 col-sm-12 mb-3" key={contact._id}>
-                        <div className="card shadow-sm border-0">
-                            <div className="card-body">
-                                <h5 className="card-title fw-bold text-primary">{contact.fullName}</h5>
-                                <p className="mb-1"><strong>Email:</strong> {contact.email}</p>
-                                <p className="mb-1"><strong>Phone:</strong> {contact.phone}</p>
-                                <p className="mb-2"><strong>Message:</strong> {contact.message}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {contacts.map((contact) => (
+                    <div
+                        className="bg-white shadow-md rounded-lg p-4 border border-gray-200 text-black"
+                        key={contact._id}
+                    >
+                        <h5 className="text-lg font-bold text-blue-600">{contact.fullName}</h5>
+                        <p className="text-sm">
+                            <strong>Email:</strong> {contact.email}
+                        </p>
+                        <p className="text-sm">
+                            <strong>Phone:</strong> {contact.phone}
+                        </p>
+                        <p className="text-sm">
+                            <strong>Message:</strong> {contact.message}
+                        </p>
 
-                                <div className="d-flex justify-content-between mt-3">
-                                    {/* ✅ Reply Email Button */}
-                                    <a href={`mailto:${contact.email}`} className="btn btn-success btn-sm">
-                                        Reply Email
-                                    </a>
+                        <div className="flex justify-between mt-4">
+                            {/* ✅ Reply Email Button */}
+                            <a
+                                href={`mailto:${contact.email}`}
+                                className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                            >
+                                Reply Email
+                            </a>
 
-                                    {/* ✅ Delete Button */}
-                                    <button className="btn btn-danger btn-sm" onClick={() => openDeleteModal(contact._id)}>
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
+                            {/* ✅ Delete Button */}
+                            <button
+                                className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                                onClick={() => openDeleteModal(contact._id)}
+                            >
+                                Delete
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* ✅ Delete Confirmation Modal */}
-            <div className="modal fade" id="deleteModal" tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title text-danger">Confirm Deletion</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <p>Are you sure you want to delete this contact? This action cannot be undone.</p>
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                                Cancel
-                            </button>
-                            <button type="button" className="btn btn-danger" onClick={handleDelete}>
-                                Delete
-                            </button>
-                        </div>
+            <div
+                id="deleteModal"
+                className="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+            >
+                <div className="bg-white rounded-lg p-6 w-11/12 sm:w-96">
+                    <h5 className="text-lg font-bold text-red-600">Confirm Deletion</h5>
+                    <p className="text-sm text-gray-600 mt-2">
+                        Are you sure you want to delete this contact? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end mt-4">
+                        <button
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mr-2"
+                            onClick={handleDelete}
+                        >
+                            Delete
+                        </button>
+                        <button
+                            className="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2 hover:bg-gray-400"
+                            onClick={closeDeleteModal}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </div>

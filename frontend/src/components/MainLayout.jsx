@@ -3,10 +3,11 @@ import Sidebar from './sidebar';
 
 const MainLayout = ({ children }) => {
   return (
-    <div className="d-flex">
+    <div className="flex">
       <Sidebar />
-      <div className="flex-grow-1">{children}</div>
+      <div className="flex-grow">{children}</div>
     </div>
+
   );
 };
 

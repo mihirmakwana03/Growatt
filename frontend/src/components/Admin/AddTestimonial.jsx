@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import axios from "axios";
-import "./testimonal.css";
 
 const AddTestimonial = () => {
     const [name, setName] = useState("");
@@ -11,6 +10,7 @@ const AddTestimonial = () => {
     const [testimonials, setTestimonials] = useState([]);
     const [selectedIds, setSelectedIds] = useState([]);
     const [filterRating, setFilterRating] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchTestimonials();
@@ -32,6 +32,7 @@ const AddTestimonial = () => {
             setName("");
             setMessage("");
             setRating(0);
+            setIsModalOpen(false);
             fetchTestimonials();
         } catch (error) {
             console.error("❌ Error submitting testimonial:", error);
@@ -46,12 +47,12 @@ const AddTestimonial = () => {
 
         try {
             await axios.delete("http://localhost:5000/testimonials", {
-                headers: { "Content-Type": "application/json" }, // ✅ Ensure JSON format
-                data: { ids: selectedIds }, // ✅ Send data inside 'data'
+                headers: { "Content-Type": "application/json" },
+                data: { ids: selectedIds },
             });
 
             setSelectedIds([]);
-            fetchTestimonials(); // Refresh list after deletion
+            fetchTestimonials();
         } catch (error) {
             console.error("❌ Error deleting testimonials:", error);
         }
@@ -66,87 +67,139 @@ const AddTestimonial = () => {
     };
 
     return (
-        <div className="container mt-4">
-            {/* ✅ Button Group */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testimonialModal">
+        <div className="container mx-auto p-4">
+            {/* Header Section */}
+            <div className="flex justify-between items-center mb-4">
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    onClick={() => setIsModalOpen(true)}
+                >
                     Add Testimonial
                 </button>
-                <div className="d-flex align-items-center">
-                    <label className="me-2">Filter by Rating:</label>
-                    <select className="form-select w-auto" onChange={(e) => setFilterRating(Number(e.target.value))}>
+                <div className="flex items-center">
+                    <label className="mr-2">Filter by Rating:</label>
+                    <select
+                        className="border rounded px-2 py-1"
+                        onChange={(e) => setFilterRating(Number(e.target.value))}
+                    >
                         <option value="0">All</option>
                         {[1, 2, 3, 4, 5].map((num) => (
-                            <option key={num} value={num}>{num} Stars</option>
+                            <option key={num} value={num}>
+                                {num} Stars
+                            </option>
                         ))}
                     </select>
                 </div>
             </div>
 
-            {/* ✅ Delete Selected Button */}
+            {/* Delete Selected Button */}
             {selectedIds.length > 0 && (
-                <div className="text-end mb-3">
-                    <button className="btn btn-danger" onClick={handleDelete}>Delete Selected ({selectedIds.length})</button>
+                <div className="text-right mb-4">
+                    <button
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        onClick={handleDelete}
+                    >
+                        Delete Selected ({selectedIds.length})
+                    </button>
                 </div>
             )}
 
-            {/* ✅ Bootstrap Modal for Upload Form */}
-            <div className="modal fade" id="testimonialModal" tabIndex="-1" aria-labelledby="testimonialModalLabel" aria-hidden="true">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title text-primary">Add Testimonial</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-2">
-                                    <label className="form-label fw-bold small">Name</label>
-                                    <input type="text" className="form-control" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                                </div>
-                                <div className="mb-2">
-                                    <label className="form-label fw-bold small">Message</label>
-                                    <textarea className="form-control" rows="2" placeholder="Your testimonial..." value={message} onChange={(e) => setMessage(e.target.value)} required></textarea>
-                                </div>
-                                <div className="mb-2 text-center">
-                                    <label className="form-label d-block small">Rate Us</label>
+            {/* Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center text-black">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                        <h3 className="text-lg font-bold mb-4">Add Testimonial</h3>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-4">
+                                <label className="block font-medium mb-1">Name</label>
+                                <input
+                                    type="text"
+                                    className="w-full border rounded px-3 py-2 bg-white"
+                                    placeholder="Your Name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block font-medium mb-1">Message</label>
+                                <textarea
+                                    className="w-full border rounded px-3 py-2 bg-white"
+                                    rows="3"
+                                    placeholder="Your testimonial..."
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    required
+                                ></textarea>
+                            </div>
+                            <div className="mb-4 text-center">
+                                <label className="block font-medium mb-2">Rate Us</label>
+                                <div className="flex justify-center">
                                     {[...Array(5)].map((_, index) => (
-                                        <FaStar key={index} size={20} onClick={() => setRating(index + 1)} onMouseEnter={() => setHover(index + 1)} onMouseLeave={() => setHover(null)} color={index + 1 <= (hover || rating) ? "#ffc107" : "#e4e5e9"} className="mx-1 cursor-pointer" />
+                                        <FaStar
+                                            key={index}
+                                            size={24}
+                                            onClick={() => setRating(index + 1)}
+                                            onMouseEnter={() => setHover(index + 1)}
+                                            onMouseLeave={() => setHover(null)}
+                                            color={index + 1 <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
+                                            className="cursor-pointer mx-1"
+                                        />
                                     ))}
                                 </div>
-                                <div className="d-flex justify-content-end mt-2">
-                                    <button type="submit" className="btn btn-success me-2">Submit</button>
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+                            <div className="flex justify-end">
+                                <button
+                                    type="submit"
+                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
+                                >
+                                    Submit
+                                </button>
+                                <button
+                                    type="button"
+                                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                                    onClick={() => setIsModalOpen(false)}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
+            )}
 
-            {/* ✅ Display Testimonials in a Grid */}
-            <div className="row">
-                {testimonials.filter(t => filterRating === 0 || t.rating === filterRating).map((testimonial) => (
-                    <div key={testimonial._id} className="col-lg-4 col-md-6 col-sm-12 mb-3">
-                        <div className={`card p-2 shadow-sm ${selectedIds.includes(testimonial._id) ? "border border-danger" : ""}`}>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <h6 className="mb-0">{testimonial.name}</h6>
+            {/* Testimonials Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {testimonials
+                    .filter((t) => filterRating === 0 || t.rating === filterRating)
+                    .map((testimonial) => (
+                        <div
+                            key={testimonial._id}
+                            className={`border rounded-lg p-4 shadow ${
+                                selectedIds.includes(testimonial._id) ? "border-red-500" : ""
+                            }`}
+                        >
+                            <div className="flex justify-between items-center mb-2">
+                                <h6 className="font-bold">{testimonial.name}</h6>
                                 <input
                                     type="checkbox"
-                                    className="form-check-input"
+                                    className="form-checkbox"
                                     checked={selectedIds.includes(testimonial._id)}
                                     onChange={() => toggleSelect(testimonial._id)}
                                 />
                             </div>
-                            <p className="small mb-1">{testimonial.message}</p>
-                            <div>
+                            <p className="text-sm mb-2">{testimonial.message}</p>
+                            <div className="flex">
                                 {[...Array(5)].map((_, index) => (
-                                    <FaStar key={index} size={16} color={index < testimonial.rating ? "#ffc107" : "#e4e5e9"} />
+                                    <FaStar
+                                        key={index}
+                                        size={16}
+                                        color={index < testimonial.rating ? "#ffc107" : "#e4e5e9"}
+                                    />
                                 ))}
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
             </div>
         </div>
     );

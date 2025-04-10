@@ -80,7 +80,7 @@ app.use("/contact", contactRoutes);  // ✅ Mount contact routes
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
 app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);
-app.use('/membersImg', express.static(path.join(__dirname, 'membersImg')));
+app.use('/membersImg', express.static(path.join(__dirname, 'public', 'membersImg')));
 app.use("/team", teamRoutes);
 
 app.get("/", (req, res) => {

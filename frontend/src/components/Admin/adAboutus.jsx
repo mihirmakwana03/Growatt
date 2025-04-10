@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const TeamMembers = () => {
     const [teamMembers, setTeamMembers] = useState([]);
@@ -85,68 +84,109 @@ const TeamMembers = () => {
     };
 
     return (
-        <div className="container mt-5">
-            <h2 className="text-center text-primary mb-4 fw-bold">Our Team</h2>
-            <div className="d-flex justify-content-between mb-3">
-                <button className="btn btn-success" onClick={() => setShowModal(true)}>+ Add Member</button>
-                <select className="form-select w-auto" value={filter} onChange={handleFilterChange}>
+        <div className="container mx-auto px-4 py-8">
+            <h2 className="text-center text-blue-600 text-2xl font-bold mb-6">Our Team</h2>
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+                <button
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    onClick={() => setShowModal(true)}
+                >
+                    + Add Member
+                </button>
+                <select
+                    className="mt-4 md:mt-0 border border-gray-300 rounded px-3 py-2"
+                    value={filter}
+                    onChange={handleFilterChange}
+                >
                     <option value="">All Designations</option>
-                    {Array.from(new Set(teamMembers.map(member => member.designation))).map((designation, index) => (
-                        <option key={index} value={designation}>{designation}</option>
+                    {Array.from(new Set(teamMembers.map((member) => member.designation))).map((designation, index) => (
+                        <option key={index} value={designation}>
+                            {designation}
+                        </option>
                     ))}
                 </select>
             </div>
 
-            <div className="row">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {filteredMembers.map((member) => (
-                    <div key={member._id} className="col-md-4 text-center mb-4">
-                        <div className="card shadow border-0 p-3">
-                            <img
-                                src={`http://localhost:5000/membersImg/${member.image}`}
-                                alt={member.name}
-                                className="rounded-circle mx-auto d-block"
-                                style={{ width: "150px", height: "150px", objectFit: "cover" }}
-                                crossOrigin="anonymous"
-                            />
-                            <h5 className="mt-3 fw-bold">{member.name}</h5>
-                            <p className="text-muted">{member.designation}</p>
-                            <button className="btn btn-danger btn-sm" onClick={() => handleDelete(member._id)}>Delete</button>
-                        </div>
+                    <div key={member._id} className="bg-white shadow rounded p-4 text-center">
+                        <img
+                            src={`http://localhost:5000/membersImg/${member.image}`}
+                            alt={member.name}
+                            className="w-24 h-24 rounded-full mx-auto object-cover"
+                            crossOrigin="anonymous"
+                        />
+                        <h5 className="mt-4 font-bold text-lg text-black">{member.name}</h5>
+                        <p className="text-gray-500">{member.designation}</p>
+                        <button
+                            className="mt-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                            onClick={() => handleDelete(member._id)}
+                        >
+                            Delete
+                        </button>
                     </div>
                 ))}
             </div>
 
             {/* Modal Popup */}
             {showModal && (
-                <div className="modal fade show d-block" tabIndex="-1">
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Add Team Member</h5>
-                                <button className="btn-close" onClick={() => setShowModal(false)}></button>
-                            </div>
-                            <div className="modal-body">
-                                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                    <div className="mb-3">
-                                        <label className="form-label">Name</label>
-                                        <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Designation</label>
-                                        <input type="text" className="form-control" name="designation" value={formData.designation} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Image</label>
-                                        <input type="file" className="form-control" name="image" accept="image/*" onChange={handleChange} required />
-                                    </div>
-                                    <button type="submit" className="btn btn-primary w-100">Add Member</button>
-                                </form>
-                            </div>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg w-full max-w-md text-black">
+                        <div className="flex justify-between items-center p-4 border-b">
+                            <h5 className="text-lg font-bold">Add Team Member</h5>
+                            <button
+                                className="text-gray-500 hover:text-gray-700"
+                                onClick={() => setShowModal(false)}
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div className="p-4">
+                            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Name</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Designation</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                                        name="designation"
+                                        value={formData.designation}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Image</label>
+                                    <input
+                                        type="file"
+                                        className="w-full border border-gray-300 rounded px-3 py-2"
+                                        name="image"
+                                        accept="image/*"
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                >
+                                    Add Member
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             )}
-            {showModal && <div className="modal-backdrop fade show"></div>}
         </div>
     );
 };
