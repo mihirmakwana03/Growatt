@@ -2,13 +2,12 @@ import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import ReCAPTCHA from 'react-google-recaptcha';
-import { Phone, Mail, MapPin, Clock, Facebook, Twitter, Instagram, Linkedin, Send } from 'lucide-react';
-// import WhatsApp from "../components/WhatsApp";
+import { Phone, Mail, MapPin, Clock, Linkedin, Send, Facebook as FacebookIcon, Twitter as TwitterIcon, Instagram as InstagramIcon } from 'lucide-react';
 
 const socialLinks = [
-    { icon: Facebook, href: 'https://www.facebook.com/Growattinfo/', label: 'Facebook' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Instagram, href: 'https://www.instagram.com/growatt_info/', label: 'Instagram' },
+    { icon: FacebookIcon, href: 'https://www.facebook.com/Growattinfo/', label: 'Facebook' },
+    { icon: TwitterIcon, href: '#', label: 'Twitter' },
+    { icon: InstagramIcon, href: 'https://www.instagram.com/growatt_info/', label: 'Instagram' },
     { icon: Linkedin, href: 'https://www.linkedin.com/company/growatt-infosystem/', label: 'LinkedIn' },
 ];
 
@@ -42,6 +41,7 @@ export default function Contact() {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
+        countryCode: '+91',
         phone: '',
         message: '',
     });
@@ -55,38 +55,64 @@ export default function Contact() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (!recaptchaValue) {
             alert('Please complete the reCAPTCHA verification');
             return;
         }
+        
+        if (!formData.fullName || !formData.email || !formData.message) {
+            alert("Please fill in all required fields: Full Name, Email, and Message.");
+            setLoading(false);
+            return;
+          }
+          if (!formData.phone) {
+            alert("Please provide your phone number.");
+            setLoading(false);
+            return;
+          }
+          
+        // Prepare the payload; adjust phone format if needed
+        const payload = {
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.countryCode.replace('+', '') + formData.phone,
 
+            message: formData.message,
+            captcha: recaptchaValue,
+        };
+        
+        console.log("Submitting payload:", payload);
+        
         setLoading(true);
-
+        
         try {
             const response = await fetch("http://localhost:5000/contact/submitcontact", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    fullName: formData.fullName,
-                    email: formData.email,
-                    phone: formData.phone,
-                    message: formData.message,
-                    captcha: recaptchaValue,
-                }),
+                body: JSON.stringify(payload),
             });
-
+            
             const data = await response.json();
 
+            if (!response.ok) {
+                console.error("Submission error:", data);
+                setResponseMessage("❌ Error: " + data.error + (data.details ? " (" + JSON.stringify(data.details) + ")" : ""));
+              }
+              
+            
             if (response.ok) {
                 setResponseMessage("✅ Form submitted successfully!");
                 setFormData({
                     fullName: '',
                     email: '',
+                    countryCode: '+91', // ensure you reset to default if needed
                     phone: '',
                     message: '',
                 });
             } else {
                 setResponseMessage("❌ Error: " + data.error);
+                console.error("Submission error:", data);
             }
         } catch (error) {
             console.error("❌ Submission error:", error);
@@ -95,6 +121,7 @@ export default function Contact() {
             setLoading(false);
         }
     };
+    
 
     const onRecaptchaChange = useCallback((value) => {
         setRecaptchaValue(value);
@@ -108,10 +135,11 @@ export default function Contact() {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-16"
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6"><span className="text-gradient">Get in Touch</span></h1>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                        <span className="text-gradient">Get in Touch</span>
+                    </h1>
                     <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                        Have a project in mind? We'd love to hear from you. Send us a message
-                        and we'll respond within 24-48 hours.
+                        Have a project in mind? We'd love to hear from you. Send us a message and we'll respond within 24-48 hours.
                     </p>
                 </motion.div>
 
@@ -147,12 +175,26 @@ export default function Contact() {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">Phone Number</label>
-                                <input
-                                    type="tel"
-                                    className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                                    value={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                />
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="+91"
+                                        className="w-1/6 bg-white/5 rounded-lg border border-white/10 p-2"
+                                        value={formData.countryCode || '+91'}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, countryCode: e.target.value })
+                                        }
+                                    />
+                                    <input
+                                        type="tel"
+                                        placeholder="Phone Number"
+                                        className="w-5/6 bg-white/5 rounded-lg border border-white/10 p-3"
+                                        value={formData.phone}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, phone: e.target.value })
+                                        }
+                                    />
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">Message *</label>
@@ -161,7 +203,9 @@ export default function Contact() {
                                     rows={4}
                                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
                                     value={formData.message}
-                                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, message: e.target.value })
+                                    }
                                 ></textarea>
                             </div>
                             <ReCAPTCHA
@@ -181,7 +225,6 @@ export default function Contact() {
                     </motion.div>
 
                     {/* Contact Information */}
-                    {/* Contact Info and Social Links */}
                     <motion.div
                         ref={ref}
                         initial={{ opacity: 0, x: 20 }}
@@ -246,11 +289,9 @@ export default function Contact() {
                                 ></iframe>
                             </div>
                         </div>
-
                     </motion.div>
                 </div>
 
-                {/* Response Time Notice */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -263,22 +304,6 @@ export default function Contact() {
                     </p>
                 </motion.div>
             </div>
-
-            {/* WhatsApp Button */}
-            {/* <WhatsApp /> */}
-            {/* <a
-                href="https://wa.me/918155808720?text=Hello%2C%20I%20have%20visited%20your%20website%20and%20am%20interested%20in%20your%20services.%20Could%20you%20please%20provide%20me%20with%20more%20information%3F"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fixed bottom-6 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors animate-pulse"
-                aria-label="Chat on WhatsApp"
-            >
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-                    alt="WhatsApp"
-                    className="w-8 h-8"
-                />
-            </a> */}
         </div>
     );
 }

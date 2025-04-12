@@ -22,7 +22,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
-      <Cursor />
+      {!isAdminRoute && <Cursor />}
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <WhatsApp />}
       <main className="flex-grow">
@@ -45,7 +45,6 @@ function App() {
     </div>
   );
 }
-
 
 function AppWrapper() {
   return (
