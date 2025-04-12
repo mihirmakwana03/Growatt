@@ -3,8 +3,8 @@ import axios from 'axios';
 import { Canvas } from '@react-three/fiber';
 import { Scene } from '../components/Scene';
 import { motion } from 'framer-motion';
-// Import the TestimonialSlider component
-import {TestimonialSlider} from '../components/TestimonialSlider';
+import { TestimonialSlider } from '../components/TestimonialSlider';
+import { GoogleReviewsWidget } from '../components/GoogleReviewsWidget';
 
 // Use API_URL from environment variables; fallback to localhost for development.
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -214,8 +214,20 @@ export default function Home() {
       </section>
 
 
-{/* Client Testimonials Section - Dynamic */}
-<TestimonialSlider />
+      {/* Client Testimonials Section - Dynamic */}
+      <TestimonialSlider />
+
+
+      {/* Add the Google Reviews widget */}
+      {/* <section className="py-20 bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center mb-12 gsap-fade-up text-[#ff6d00]">
+            Customer Reviews
+          </h2>
+          <GoogleReviewsWidget />
+        </div>
+      </section> */}
+
 
       {/* Call-to-Action */}
       <section className="py-20 bg-gradient-to-r from-gray-800 to-gray-800">

@@ -15,8 +15,8 @@ const Cursor = () => {
 
         const animateOutline = () => {
             // Smoothly interpolate the outline position
-            outlineX += (posX - outlineX) * 0.2;
-            outlineY += (posY - outlineY) * 0.2;
+            outlineX += (posX - outlineX) * 0.3;
+            outlineY += (posY - outlineY) * 0.3;
 
             if (cursorOutline) {
                 cursorOutline.style.left = `${outlineX}px`;

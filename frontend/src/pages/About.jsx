@@ -84,7 +84,7 @@ export default function About() {
         </div>
 
         {/* Leadership Section */}
-        <div className="mb-20"></div>
+        <div className="mb-20">
         <h2 className="text-3xl font-bold text-center mb-12">
           Our Leadership
         </h2>
@@ -125,9 +125,10 @@ export default function About() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* Company Values */}
-      <div className="text-center mb-20 mt-20">
+      <div className="text-center mb-20 mt-20 m-32">
         <h2 className="text-3xl font-bold mb-12">Our Values</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <motion.div
