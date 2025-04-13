@@ -90,7 +90,7 @@ function AdInquiry() {
                             <strong>Email:</strong> {contact.email}
                         </p>
                         <p className="text-sm">
-                            <strong>Phone:</strong> {contact.phone}
+                            <strong>Phone:</strong> +{contact.phone}
                         </p>
                         <p className="text-sm">
                             <strong>Message:</strong> {contact.message}
