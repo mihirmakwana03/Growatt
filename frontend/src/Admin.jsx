@@ -11,11 +11,13 @@ import CustomerForm from "./components/Admin/CustomerForm";
 import AddTestimonial from "./components/Admin/AddTestimonial";
 import AdDashboard from "./components/Admin/AdDashboard";
 import AddTeamMember from "./components/Admin/AdAboutUs";
+import Signup from "./components/Admin/signup";
 
 const Admin = () => {
   return (
     <MainLayout>
       <Routes>
+        <Route path="/" element={<Signup />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="services" element={<Service />} />
