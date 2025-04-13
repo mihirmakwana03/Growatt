@@ -14,6 +14,7 @@ const applicationRoutes = require("./routes/applications");
 const customerRoutes = require("./routes/customerRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
 const teamRoutes = require("./routes/teamRoutes");
+const admin = require("./routes/adminRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -69,7 +70,7 @@ app.use(
 
 
 // ✅ Routes
-app.use("/admin", require("./routes/adminRoutes")); // Admin login/logout
+app.use("/admin", admin); // Admin login/logout
 app.use("/applications", applicationRoutes);
 app.use("/careers", (careerRoutes));
 app.use("/portfolio", portfolioRoutes);
