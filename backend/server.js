@@ -25,8 +25,7 @@ if (!process.env.MONGO_URI || !process.env.SESSION_SECRET) {
 }
 
 // ✅ MongoDB Connection
-mongoose
-    .connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -40,16 +39,16 @@ mongoose
 app.use(express.json());
 app.use(cors({
     origin: function (origin, callback) {
-      const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        return callback(null, true);
-      }
-      callback(new Error("Not allowed by CORS"));
+        const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+        }
+        callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  }));
-  
+}));
+
 app.use(helmet());
 
 // ✅ Session Middleware (Admin Authentication)
