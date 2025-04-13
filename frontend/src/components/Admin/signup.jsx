@@ -1,9 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
 const Signup = () => {
-
     const [formData, setFormData] = React.useState({
         username: '',
         email: '',
@@ -11,6 +9,7 @@ const Signup = () => {
     });
 
     const [error, setError] = React.useState(null);
+    const [success, setSuccess] = React.useState(null); // New state for success message
     const [loading, setLoading] = React.useState(false);
     const navigate = useNavigate();
 
@@ -19,36 +18,42 @@ const Signup = () => {
             ...formData,
             [e.target.id]: e.target.value
         });
-    }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const res = await fetch('http://localhost:5000/admin/auth/signup', { // Updated API endpoint
+        setError(null);
+        setSuccess(null); // Clear success message on new submission
+
+        const res = await fetch('http://localhost:5000/admin/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(formData)
         });
+
         if (!res.ok) {
             console.error(`Error: ${res.status} - ${res.statusText}`);
             const errorData = await res.json().catch(() => ({ error: 'Invalid response' }));
-            console.log(errorData);
+            setError(errorData.error || 'Something went wrong');
+            setLoading(false);
             return;
         }
+
         const data = await res.json();
-        if(data.success == false) {
+        if (data.success === false) {
             setError(data.message);
             setLoading(false);
             return;
         }
+
         setLoading(false);
         setError(null);
-        // navigate('/admin/dashboard');
+        setSuccess('Registration successful!'); // Set success message
         console.log(data);
-    }
-
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -102,6 +107,11 @@ const Signup = () => {
                 {error && (
                     <div className="mt-4 text-red-500 text-sm">
                         {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="mt-4 text-green-500 text-sm">
+                        {success}
                     </div>
                 )}
             </div>
