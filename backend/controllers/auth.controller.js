@@ -1,7 +1,8 @@
 const { Admin } = require("../models/admin.model.js");
 const bcrypt = require("bcryptjs");
+const errorHandler = require("../utils/error.js");
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
     // console.log(req.body);
     const { username, email, password } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
@@ -10,7 +11,8 @@ const signup = async (req, res) => {
         await newAdmin.save();
         res.status(201).json("Admin create succesfully");        
     } catch (error) {
-        res.status(500).json(error.message);
+        next(error);
+        // next(errorHandler(550, "Error from the function ", error.message));
     }
 
 };

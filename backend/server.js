@@ -91,8 +91,15 @@ app.use("/team", teamRoutes);
 
 // ✅ Global Error Handling
 app.use((err, req, res, next) => {
-    console.error("❌ Server Error:", err.stack);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    return res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message,
+    });
+    // console.error("❌ Server Error:", err.stack);
+    // res.status(500).json({ message: "Internal Server Error", error: err.message });
 });
 
 // ✅ Graceful Shutdown
