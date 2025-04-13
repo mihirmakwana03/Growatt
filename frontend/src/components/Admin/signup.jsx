@@ -1,16 +1,66 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Signup = () => {
+
+    const [formData, setFormData] = React.useState({
+        username: '',
+        email: '',
+        password: ''
+    });
+
+    const [error, setError] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.id]: e.target.value
+        });
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const res = await fetch('http://localhost:5000/admin/auth/signup', { // Updated API endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        if (!res.ok) {
+            console.error(`Error: ${res.status} - ${res.statusText}`);
+            const errorData = await res.json().catch(() => ({ error: 'Invalid response' }));
+            console.log(errorData);
+            return;
+        }
+        const data = await res.json();
+        if(data.success == false) {
+            setError(data.message);
+            setLoading(false);
+            return;
+        }
+        setLoading(false);
+        setError(null);
+        // navigate('/admin/dashboard');
+        console.log(data);
+    }
+
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Register Admin</h1>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                             Username
                         </label>
                         <input
+                            onChange={handleChange}
                             type="text"
                             id="username"
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-black"
@@ -22,6 +72,7 @@ const Signup = () => {
                             Email
                         </label>
                         <input
+                            onChange={handleChange}
                             type="email"
                             id="email"
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-black"
@@ -33,6 +84,7 @@ const Signup = () => {
                             Password
                         </label>
                         <input
+                            onChange={handleChange}
                             type="password"
                             id="password"
                             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-black"
@@ -40,12 +92,18 @@ const Signup = () => {
                         />
                     </div>
                     <button
+                        disabled={loading}
                         type="submit"
                         className="uppercase w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
-                        Register
+                        {loading ? 'Loading...' : 'Register'}
                     </button>
                 </form>
+                {error && (
+                    <div className="mt-4 text-red-500 text-sm">
+                        {error}
+                    </div>
+                )}
             </div>
         </div>
     );
