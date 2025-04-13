@@ -15,6 +15,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const admin = require("./routes/adminRoutes");
+const authRoutes = require("./routes/auth.route.js");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -68,9 +69,13 @@ app.use(
     })
 );
 
+app.get("/", (req, res) => {
+    res.send("🚀 Server is running!");
+});
 
 // ✅ Routes
-app.use("/admin", admin); // Admin login/logout
+app.use("/admin/login", admin); // Admin login/logout
+app.use("/admin/auth", authRoutes); // Auth routes
 app.use("/applications", applicationRoutes);
 app.use("/careers", (careerRoutes));
 app.use("/portfolio", portfolioRoutes);
@@ -83,9 +88,6 @@ app.use("/testimonials", testimonialRoutes);
 app.use('/membersImg', express.static(path.join(__dirname, 'public', 'membersImg')));
 app.use("/team", teamRoutes);
 
-app.get("/", (req, res) => {
-    res.send("🚀 Server is running!");
-});
 
 // ✅ Global Error Handling
 app.use((err, req, res, next) => {
