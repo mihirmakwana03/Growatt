@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart, signInSuccess, signInFailure } from "../../redux/admin/adminSlice";
 
 const Login = () => {
   const [formData, setFormData] = React.useState({
@@ -8,12 +10,9 @@ const Login = () => {
     password: ''
   });
 
-
-  const [error, setError] = useState("");
-  // const [loading, setLoading] = React.useState(false);
-  // const [username, setusername] = useState("");
-  // const [password, setPassword] = useState("");
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -24,50 +23,42 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setLoading(true);
-    setError(null);
-
-    let res;
     try {
-      res = await fetch('http://localhost:5000/admin/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-    } catch (networkError) {
-      console.error('Network error:', networkError);
-      setError('Unable to connect to the server. Please try again later.');
-      // setLoading(false);
-      return;
+      dispatch(signInStart());
+
+      let res;
+      try {
+        res = await fetch('http://localhost:5000/admin/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+      } catch (networkError) {
+        console.error('Network error:', networkError);
+        dispatch(signInFailure('Unable to connect to the server. Please try again later.'));
+        return;
+      }
+
+      if (!res.ok) {
+        console.error(`Error: ${res.status} - ${res.statusText}`);
+        const errorData = await res.json().catch(() => ({ error: 'Invalid response' }));
+        dispatch(signInFailure(errorData.error || 'Something went wrong'));
+        return;
+      }
+
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+        return;
+      }
+
+      dispatch(signInSuccess(data));
+      navigate("/admin/dashboard");
+    } catch (error) {
+      dispatch(signInFailure(error.message));
     }
-
-    if (!res.ok) {
-      console.error(`Error: ${res.status} - ${res.statusText}`);
-      const errorData = await res.json().catch(() => ({ error: 'Invalid response' }));
-      setError(errorData.error || 'Something went wrong');
-      // setLoading(false);
-      return;
-    }
-
-    const data = await res.json();
-    if (data.success === false) {
-      setError(data.message);
-      // setLoading(false);
-      return;
-    }
-
-    // setLoading(false);
-    setError(null);
-    navigate("/admin/dashboard")
-    console.log(data);
-
-    // if (username === "admin" && password === "admin") {
-    //   navigate("/admin/dashboard");
-    // } else {
-    //   setErrorMessage("Invalid credentials");
-    // }
   };
 
   return (
@@ -91,7 +82,6 @@ const Login = () => {
               type="text"
               id="username"
               placeholder="Enter your username"
-              // value={username}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-4 py-2 bg-[#0f172a] border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -105,18 +95,15 @@ const Login = () => {
               type="password"
               id="password"
               placeholder="Enter your password"
-              // value={password}
               onChange={handleChange}
               required
               className="mt-1 block w-full px-4 py-2 bg-[#0f172a] border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <button
-            // disabled={loading}
             type="submit"
             className="uppercase w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition-all duration-300"
           >
-            {/* {loading ? 'Loading...' : 'Log In'} */}
             Log In
           </button>
         </form>
@@ -130,15 +117,6 @@ const Login = () => {
               Reset it here
             </a>
           </p>
-          {/* <p className="mt-2">
-            Don't have an account?{" "}
-            <a
-              href="/signup"
-              className="text-blue-500 hover:underline"
-            >
-              Sign up
-            </a>
-          </p> */}
         </div>
       </div>
     </div>
