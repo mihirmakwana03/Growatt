@@ -26,18 +26,14 @@ const signup = async (req, res, next) => {
 const login = async (req, res, next) => {
     const { username, password } = req.body;
     try {
-
         const validUser = await Admin.findOne({ username });
-        if (!validUser) return next(error(404, "User not found!"));
+        if (!validUser) return res.status(404).json({ error: "User not found!" });
 
         const validPassword = bcrypt.compareSync(password, validUser.password);
-        if (!validPassword) return next(error(401, "Wrong Credentials!"));
+        if (!validPassword) return res.status(401).json({ error: "Wrong Credentials!" });
 
-        const token = jwt.sign(
-            { id: validUser._id },
-            process.env.JWT_SECRET
-        );
-        
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+
         const { password: pass, ...others } = validUser._doc;
 
         res.cookie("access_token", token, {
@@ -47,8 +43,8 @@ const login = async (req, res, next) => {
             // sameSite: "strict",
         }).status(200).json(others);
 
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        next(err); // Pass other errors to the error handler
     }
 }
 
