@@ -104,9 +104,9 @@ function AdInquiry() {
                                 href={`http://localhost:5000/contactuploadsimg/${contact.files}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-500 hover:underline"
+                                className="text-blue-500 hover:underline font-bold"
                             >
-                                {contact.files}
+                                View File
                             </a>
                           ) : (
                             "No files attached"

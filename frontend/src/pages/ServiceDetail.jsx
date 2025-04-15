@@ -36,7 +36,7 @@ export default function ServiceDetail() {
           className="text-center mb-16"
         >
           <Icon className="w-16 h-16 text-primary mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 pb-10 text-gradient">
             {service.title}
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
@@ -44,29 +44,144 @@ export default function ServiceDetail() {
           </p>
         </motion.div>
 
-        {/* Features */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          <div className="glass p-8 rounded-xl">
-            <h2 className="text-2xl font-bold mb-6">What's Included</h2>
-            <ul className="space-y-4">
-              {service.features.map((feature, index) => (
-                <li key={index} className="flex items-center">
-                  <Icons.Check className="w-5 h-5 text-primary mr-3" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
+        {/* Pricing Section */}
+        <section className="py-10">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* <div className="mb-12">
+              <h2 className="text-5xl text-center font-bold text-gray-100 mb-4">
+                Choose your plan
+              </h2>
+              <p className="text-gray-300 text-center leading-6 mb-9">
+                7 Days free trial. No credit card required.
+              </p>
+              
+              <div className="flex justify-center items-center">
+                <label className="min-w-[3.5rem] text-xl relative text-gray-100 mr-4 font-medium">
+                  Bill Monthly
+                </label>
+                <input
+                  type="checkbox"
+                  id="basic-with-description"
+                  className="relative shrink-0 w-11 h-6 p-0.5 bg-primary/20 checked:bg-primary rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:border-blue-600 appearance-none before:inline-block before:w-5 before:h-5 before:bg-primary checked:before:bg-primary before:translate-x-0 checked:before:translate-x-full before:shadow before:rounded-full before:transform before:transition before:ease-in-out before:duration-200"
+                />
+                <label className="relative min-w-[3.5rem] font-medium text-xl text-gray-300 ml-4">
+                  Bill Yearly
+                </label>
+              </div>
+              
+            </div> */}
+            {/* Grid */}
+            <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-8 lg:space-y-0 lg:items-center">
+              {/* Pricing Card */}
+              <div className="flex flex-col mx-auto max-w-sm text-gray-100 rounded-2xl bg-gray-800 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-700">
+                <h3 className="text-2xl font-bold mb-3">Free</h3>
+                <div className="flex items-center mb-6">
+                  <span className="mr-2 text-6xl font-semibold">$0</span>
+                  <span className="text-xl text-gray-300">/ month</span>
+                </div>
+                {/* List */}
+                <ul className="mb-12 space-y-6 text-left text-lg text-gray-300">
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>2 auto tracking</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>7 Day transaction clearing</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>24/7 Customer support</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>All widget access</span>
+                  </li>
+                </ul>
+                <button className="py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-primary/80">
+                  Purchase Plan
+                </button>
+                {/* List End */}
+              </div>
+              {/* Pricing Card */}
+              <div className="flex flex-col mx-auto max-w-sm text-gray-100 rounded-2xl bg-primary/10 transition-all duration-500 hover:bg-primary/20">
+                <div className="uppercase bg-gradient-to-r from-primary to-secondary rounded-t-2xl p-3 text-center text-white">
+                  MOST POPULAR
+                </div>
+                <div className="p-6 xl:py-9 xl:px-12">
+                  <h3 className="text-2xl font-bold mb-3">Advanced</h3>
+                  <div className="flex items-center mb-6">
+                    <span className="mr-2 text-6xl font-semibold text-primary">$150</span>
+                    <span className="text-xl text-gray-300">/ month</span>
+                  </div>
+                  {/* List */}
+                  <ul className="mb-12 space-y-6 text-left text-lg">
+                    <li className="flex items-center space-x-4">
+                      <Icons.Check className="w-6 h-6 text-primary" />
+                      <span>AI Advisor</span>
+                    </li>
+                    <li className="flex items-center space-x-4">
+                      <Icons.Check className="w-6 h-6 text-primary" />
+                      <span>Unlimited auto tracking</span>
+                    </li>
+                    <li className="flex items-center space-x-4">
+                      <Icons.Check className="w-6 h-6 text-primary" />
+                      <span>1 Day transaction clearing</span>
+                    </li>
+                    <li className="flex items-center space-x-4">
+                      <Icons.Check className="w-6 h-6 text-primary" />
+                      <span>Priority customer support</span>
+                    </li>
+                    <li className="flex items-center space-x-4">
+                      <Icons.Check className="w-6 h-6 text-primary" />
+                      <span>All Widget Access</span>
+                    </li>
+                  </ul>
+                  <button className="py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-primary/80">
+                    Purchase Plan
+                  </button>
+                  {/* List End */}
+                </div>
+              </div>
+              {/* Pricing Card */}
+              <div className="flex flex-col mx-auto max-w-sm text-gray-100 rounded-2xl bg-gray-800 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-700">
+                <h3 className="text-2xl font-bold mb-3">Team</h3>
+                <div className="flex items-center mb-6">
+                  <span className="mr-2 text-6xl font-semibold">$180</span>
+                  <span className="text-xl text-gray-300">/ month</span>
+                </div>
+                {/* List */}
+                <ul className="mb-12 space-y-6 text-left text-lg text-gray-300">
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>AI Advisor</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>Unlimited auto tracking</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>1 Day transaction clearing</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>Priority customer support</span>
+                  </li>
+                  <li className="flex items-center space-x-4">
+                    <Icons.Check className="w-6 h-6 text-primary" />
+                    <span>All Widget Access</span>
+                  </li>
+                </ul>
+                <button className="py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-primary/80">
+                  Purchase Plan
+                </button>
+                {/* List End */}
+              </div>
+            </div>
+            {/* Grid End */}
           </div>
-          <div className="glass p-8 rounded-xl">
-            <h2 className="text-2xl font-bold mb-6">Pricing</h2>
-            <p className="text-3xl font-bold text-primary">{service.price}</p>
-            <button className="button-gradient mt-8 px-8 py-3 rounded-lg font-medium w-full">
-              Get Started
-            </button>
-          </div>
-        </div>
-
-        {/* Process */}
+        </section>
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-center mb-12">Our Process</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -84,7 +199,7 @@ export default function ServiceDetail() {
           </div>
         </div>
 
-        {/* Portfolio - Filtered for "Logo Design" */}
+        {/* Portfolio - Filtered*/}
         <h2 className="text-3xl font-bold text-center mb-12">Recent Works</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {portfolio
@@ -93,14 +208,15 @@ export default function ServiceDetail() {
                 item.type.toLowerCase().replace(/\s+/g, "-") ===
                 serviceId.toLowerCase()
             )
+            .slice(0, 3) // Limit to first 3 results
             .map((item, index) => (
               <div key={index} className="glass overflow-hidden rounded-xl">
                 <img
-                    crossOrigin="anonymous"
-                    src={`${API_URL}${item.imageUrl}`}
-                    alt={item.title}
-                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
+                  crossOrigin="anonymous"
+                  src={`${API_URL}${item.imageUrl}`}
+                  alt={item.title}
+                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                   <p className="text-gray-300">{item.description}</p>
