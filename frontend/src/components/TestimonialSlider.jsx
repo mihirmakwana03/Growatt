@@ -36,24 +36,12 @@ const TestimonialSlider = () => {
                 className="p-6 bg-[#1a1a1a] rounded-lg gsap-fade-up"
               >
                 <img
-<<<<<<< HEAD
-                  src={
-                    testimonial.imageUrl ? testimonial.imageUrl : defaultImage
-                  }
-                  alt={testimonial.name}
-                  className="w-16 h-16 rounded-full mb-4"
-                />
-                <p className="text-gray-300 mb-4">
-                  "{testimonial.message}"
-                </p>
-=======
                   crossOrigin="anonymous"
                   src={`http://localhost:5000${testimonial.imageUrl}`}
                   alt={testimonial.name}
                   className="w-16 h-16 rounded-full mb-4"
                 />
                 <p className="text-gray-300 mb-4">"{testimonial.message}"</p>
->>>>>>> a4bac4c (first commit)
                 <div className="mb-2 flex">
                   {Array.from({ length: testimonial.rating || 0 }).map(
                     (_, index) => (

@@ -120,19 +120,6 @@ export default function About() {
                   <div>
                     <h3 className="text-2xl font-bold mb-2">{member.name}</h3>
                     <p className="text-primary mb-4">{member.designation}</p>
-<<<<<<< HEAD
-                    {/* <p className="text-gray-300 mb-4">{member.bio}</p> */}
-                    <div className="flex gap-4">
-                      {/* {member.social.map((link, i) => (
-                        <a
-                          key={i}
-                          href={link.url}
-                          className="text-gray-300 hover:text-primary transition-colors"
-                        >
-                          {link.platform}
-                        </a>
-                      ))} */}
-=======
                     <p className="text-gray-300 mb-4">{member.bio}</p>
                     <div className="flex gap-4">
                       <a
@@ -142,8 +129,7 @@ export default function About() {
                         className="text-primary hover:text-primary-dark transition duration-200"
                       >
                         LinkedIn
-                      </a>  
->>>>>>> a4bac4c (first commit)
+                      </a> 
                     </div>
                   </div>
                 </div>

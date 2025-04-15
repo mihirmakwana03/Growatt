@@ -3,7 +3,9 @@ const axios = require("axios");
 const router = express.Router();
 const Contact = require("../models/Contact");
 const validateContactForm = require("../utils/validateContactForm");
-
+const multer = require("multer");
+const upload = multer({ dest: 'uploads/' });
+const path = require("path");
 const RECAPTCHA_SECRET_KEY = "6LdtrvgqAAAAAN49NUdPeJRUVTnmwpUbMS7ah3Is"; // 🔹 Replace with your actual secret key
 
 // 🛠️ Function to Verify reCAPTCHA
@@ -28,14 +30,14 @@ const verifyRecaptcha = async (token) => {
 };
 
 // 📌 Route to Submit Contact Form
-router.post("/submitcontact", async (req, res) => {
+router.post("/submitcontact", upload.single('file'), async (req, res) => {
     try {
 
         console.log("📩 Received form data:", req.body);
 
         const { captcha, ...formData } = req.body; // Extract reCAPTCHA token
 
-        //Step 1: Verify reCAPTCHA
+        // Step 1: Verify reCAPTCHA
         if (!captcha) {
             return res.status(400).json({ error: "reCAPTCHA is missing." });
         }
@@ -47,15 +49,14 @@ router.post("/submitcontact", async (req, res) => {
 
         console.log("✅ reCAPTCHA verified!");
 
-        //Step 2: Validate Contact Form
+        // Step 2: Validate Contact Form
         const errors = validateContactForm(formData);
         if (errors) {
             console.log("🚨 Form validation errors:", errors);  // <-- Add this
             return res.status(400).json({ error: "Validation failed", details: errors });
         }
 
-
-        //Step 3: Save Contact Form Data
+        // Step 3: Save Contact Form Data
         const newContact = new Contact(formData);
         await newContact.save();
         res.status(201).json({ message: "Form submitted successfully!" });

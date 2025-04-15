@@ -24,10 +24,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Create Portfolio Item
-<<<<<<< HEAD
-// ✅ Create Portfolio Item
-=======
->>>>>>> a4bac4c (first commit)
 router.post("/", upload.single("image"), async (req, res) => {
     try {
         if (!req.file) {

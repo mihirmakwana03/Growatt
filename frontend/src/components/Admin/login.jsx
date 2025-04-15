@@ -1,24 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-=======
 import Logo from "./logo.png";
->>>>>>> a4bac4c (first commit)
 
 const Login = () => {
   const [uname, setUname] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-<<<<<<< HEAD
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (uname === "admin" && password === "admin") {
-      navigate("/admin/dashboard");
-    } else {
-      setErrorMessage("Invalid credentials");
-=======
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,12 +13,10 @@ const Login = () => {
       navigate("/admin/dashboard");
     } else {
       alert("Invalid credentials");
->>>>>>> a4bac4c (first commit)
     }
   };
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
       <div className="bg-[#1e293b] shadow-2xl rounded-2xl p-8 w-full max-w-md text-white">
         <div className="flex flex-col items-center mb-6">
@@ -101,48 +86,6 @@ const Login = () => {
         </div>
       </div>
     </div>
-=======
-    <>
-      <div className="background">
-        <div className="shape shape1"></div>
-        <div className="shape shape2"></div>
-      </div>
-
-      {/* Login Form */}
-      <form className="login-form" onSubmit={handleSubmit}>
-        <a href="/">
-          <img src={Logo} className="logo" alt="logo" />
-        </a>
-        <h3>Login Here</h3>
-
-        <div className="form-group">
-          <label htmlFor="email">Username</label>
-          <input
-            type="text"
-            id="email"
-            placeholder="Email or Phone"
-            value={uname}
-            onChange={(e) => setUname(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="login-button">Log In</button>
-      </form>
-    </>
->>>>>>> a4bac4c (first commit)
   );
 };
 

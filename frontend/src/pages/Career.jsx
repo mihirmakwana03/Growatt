@@ -1,44 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { MapPin, Clock, Upload, Building, Star, Trophy, Heart } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import ReCAPTCHA from "react-google-recaptcha";
+import {
+  MapPin,
+  Clock,
+  Upload,
+  Building,
+  Star,
+  Trophy,
+  Heart,
+} from "lucide-react";
 
 const benefits = [
   {
     icon: Building,
-    title: 'Modern Office',
-    description: 'State-of-the-art facilities with recreational areas',
+    title: "Modern Office",
+    description: "State-of-the-art facilities with recreational areas",
   },
   {
     icon: Star,
-    title: 'Career Growth',
-    description: 'Regular training and skill development opportunities',
+    title: "Career Growth",
+    description: "Regular training and skill development opportunities",
   },
   {
     icon: Trophy,
-    title: 'Recognition',
-    description: 'Regular awards and recognition programs',
+    title: "Recognition",
+    description: "Regular awards and recognition programs",
   },
   {
     icon: Heart,
-    title: 'Health Benefits',
-    description: 'Comprehensive health insurance coverage',
-  },
-];
-
-const testimonials = [
-  {
-    name: 'Diya Patel',
-    position: 'Senior Developer',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
-    quote: 'Working here has been an amazing journey of growth and learning.',
-  },
-  {
-    name: 'Manish Sharma',
-    position: 'UI Designer',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
-    quote: 'The collaborative environment and creative freedom are unmatched.',
+    title: "Health Benefits",
+    description: "Comprehensive health insurance coverage",
   },
 ];
 
@@ -47,9 +40,10 @@ export default function Career() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [teamMembers, setTeamStories] = useState([]);
   const [applicationData, setApplicationData] = useState({
-    name: '',
-    email: '',
+    name: "",
+    email: "",
     resume: null,
     coverLetter: null,
   });
@@ -60,10 +54,10 @@ export default function Career() {
   });
 
   useEffect(() => {
-    fetch('http://localhost:5000/careers', { mode: 'cors' })
+    fetch("http://localhost:5000/careers", { mode: "cors" })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch jobs');
+          throw new Error("Failed to fetch jobs");
         }
         return response.json();
       })
@@ -74,6 +68,21 @@ export default function Career() {
       .catch((error) => {
         setError(error.message);
         setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/teamstories')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch team stories');
+        }
+        return res.json();
+      })
+      .then((data) => setTeamStories(data))
+      .catch((err) => {
+        console.error('TeamStories Error:', err);
+        setError(err.message);
       });
   }, []);
 
@@ -108,8 +117,14 @@ export default function Career() {
     applicationFormData.append("name", applicationData.name);
     applicationFormData.append("email", applicationData.email);
     applicationFormData.append("experience", applicationData.experience);
-    applicationFormData.append("twelvethPercentage", applicationData.twelvethPercentage);
-    applicationFormData.append("bachelorsDegree", applicationData.bachelorsDegree);
+    applicationFormData.append(
+      "twelvethPercentage",
+      applicationData.twelvethPercentage
+    );
+    applicationFormData.append(
+      "bachelorsDegree",
+      applicationData.bachelorsDegree
+    );
     applicationFormData.append("resume", applicationData.resume);
     applicationFormData.append("captcha", recaptchaValue); // ✅ Include reCAPTCHA token
 
@@ -120,7 +135,8 @@ export default function Career() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to submit application");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to submit application");
 
       alert("Application submitted successfully!");
 
@@ -148,15 +164,20 @@ export default function Career() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-6"><span className="text-gradient">Join Our Team</span></h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="text-gradient">Join Our Team</span>
+          </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Be part of an innovative team that's shaping the future of digital experiences.
+            Be part of an innovative team that's shaping the future of digital
+            experiences.
           </p>
         </motion.div>
 
         {/* Company Culture */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Work With Us</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Why Work With Us
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
               <motion.div
@@ -174,30 +195,31 @@ export default function Career() {
           </div>
         </div>
 
-        {/* Team Testimonials */}
+        {/* Team Stories */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12">Team Stories</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-blue-600">Team Stories</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {teamMembers.map((story, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
-                className="glass p-8 rounded-xl"
+                className="bg-black text-white p-6 rounded-xl shadow-lg"
               >
                 <div className="flex items-center gap-4 mb-4">
                   <img
-                    src={testimonial.image}
-                    alt={testimonial.name}
+                    src={`http://localhost:5000/storyImg/${story.image}`}
+                    alt={story.name}
                     className="w-16 h-16 rounded-full object-cover"
+                    crossOrigin="anonymous"
                   />
                   <div>
-                    <h3 className="font-bold">{testimonial.name}</h3>
-                    <p className="text-gray-300">{testimonial.position}</p>
+                    <h3 className="font-bold text-lg">{story.name}</h3>
+                    <p className="text-white-600 text-sm">{story.designation}</p>
                   </div>
                 </div>
-                <p className="text-gray-300 italic">"{testimonial.quote}"</p>
+                <p className="text-white-700 italic">"{story.message}"</p>
               </motion.div>
             ))}
           </div>
@@ -205,8 +227,12 @@ export default function Career() {
 
         {/* Job Listings */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12">Open Positions</h2>
-          {loading && <p className="text-center text-gray-300">Loading jobs...</p>}
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Open Positions
+          </h2>
+          {loading && (
+            <p className="text-center text-gray-300">Loading jobs...</p>
+          )}
           {error && <p className="text-center text-red-500">{error}</p>}
           <div className="grid gap-6">
             {jobs.map((job) => (
@@ -248,85 +274,129 @@ export default function Career() {
               animate={{ opacity: 1, scale: 1 }}
               className="glass p-8 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
-              <h2 className="text-2xl font-bold mb-6">Apply for {selectedJob.jobTitle}</h2>
+              <h2 className="text-2xl font-bold mb-6">
+                Apply for {selectedJob.jobTitle}
+              </h2>
               <div className="mb-8">
                 <h3 className="font-bold mb-2">Job Description</h3>
-                <p className="text-gray-300 mb-4">{selectedJob.shortDescription}</p>
+                <p className="text-gray-300 mb-4">
+                  {selectedJob.shortDescription}
+                </p>
               </div>
-
-<<<<<<< HEAD
-=======
               <div className="mb-8">
                 <h3 className="font-bold mb-2">Requirements</h3>
-                <p className="text-gray-300 mb-4">{selectedJob.jobRequire}</p>
+                <ul className="list-disc list-inside text-sm text-white-800">
+                  {selectedJob.jobRequire.split("\n").map((line, index) => (
+                    <li key={index}>{line}</li>
+                  ))}
+                </ul>
               </div>
 
               <div className="mb-8">
                 <h3 className="font-bold mb-2">Responsiblities</h3>
-                <p className="text-gray-300 mb-4">{selectedJob.jobResponse}</p>
+                <ul className="list-disc list-inside text-sm text-white-800">
+                  {selectedJob.jobResponse.split("\n").map((line, index) => (
+                    <li key={index}>{line}</li>
+                  ))}
+                </ul>
               </div>
-
->>>>>>> a4bac4c (first commit)
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Full Name *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Full Name *
+                  </label>
                   <input
                     type="text"
                     required
                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
                     value={applicationData.name}
-                    onChange={(e) => setApplicationData({ ...applicationData, name: e.target.value })}
+                    onChange={(e) =>
+                      setApplicationData({
+                        ...applicationData,
+                        name: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Email Address *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Email Address *
+                  </label>
                   <input
                     type="email"
                     required
                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
                     value={applicationData.email}
-                    onChange={(e) => setApplicationData({ ...applicationData, email: e.target.value })}
+                    onChange={(e) =>
+                      setApplicationData({
+                        ...applicationData,
+                        email: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Experience (in years) *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Experience (in years) *
+                  </label>
                   <input
                     type="number"
                     required
                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                    value={applicationData.experience || ''}
-                    onChange={(e) => setApplicationData({ ...applicationData, experience: e.target.value })}
+                    value={applicationData.experience || ""}
+                    onChange={(e) =>
+                      setApplicationData({
+                        ...applicationData,
+                        experience: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">12th Percentage *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    12th Percentage *
+                  </label>
                   <input
                     type="number"
                     step="0.01"
                     required
                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                    value={applicationData.twelvethPercentage || ''}
-                    onChange={(e) => setApplicationData({ ...applicationData, twelvethPercentage: e.target.value })}
+                    value={applicationData.twelvethPercentage || ""}
+                    onChange={(e) =>
+                      setApplicationData({
+                        ...applicationData,
+                        twelvethPercentage: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Bachelor's Percentage *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Bachelor's Percentage *
+                  </label>
                   <input
                     type="number"
                     step="0.01"
                     required
                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
-                    value={applicationData.bachelorsDegree || ''}
-                    onChange={(e) => setApplicationData({ ...applicationData, bachelorsDegree: e.target.value })}
+                    value={applicationData.bachelorsDegree || ""}
+                    onChange={(e) =>
+                      setApplicationData({
+                        ...applicationData,
+                        bachelorsDegree: e.target.value,
+                      })
+                    }
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Resume (PDF/DOC) *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Resume (PDF/DOC) *
+                  </label>
                   <div className="flex items-center justify-center w-full">
                     <label className="w-full flex flex-col items-center px-4 py-6 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10">
                       <Upload className="w-8 h-8 mb-2" />
@@ -335,7 +405,7 @@ export default function Career() {
                         type="file"
                         className="hidden"
                         accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange('resume')}
+                        onChange={handleFileChange("resume")}
                         required
                       />
                     </label>
