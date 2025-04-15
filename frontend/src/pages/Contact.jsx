@@ -64,12 +64,15 @@ export default function Contact() {
     fullName: "",
     email: "",
     countryCode: "+91",
+    subject: "",
+    files: [],
     phone: "",
     message: "",
   });
   const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: true,
@@ -83,31 +86,31 @@ export default function Contact() {
       return;
     }
 
-    if (!formData.fullName || !formData.email || !formData.message) {
-      alert(
-        "Please fill in all required fields: Full Name, Email, and Message."
-      );
-      setLoading(false);
-      return;
-    }
-    if (!formData.phone) {
-      alert("Please provide your phone number.");
-      setLoading(false);
+    if (
+      !formData.fullName ||
+      !formData.email ||
+      !formData.message ||
+      !formData.subject ||
+      !formData.phone
+    ) {
+      alert("Please fill in all required fields.");
       return;
     }
 
-    // Prepare the payload; adjust phone format if needed
-    const payload = {
-        fullName: formData.fullName,
-        email: formData.email,
-        phone: formData.countryCode.replace("+", "") + formData.phone,
-        subject: formData.subject,
-        files: [], // Handle file uploads separately if needed
-        message: formData.message,
-        captcha: recaptchaValue,
-    };
+    const form = new FormData();
+    form.append("fullName", formData.fullName);
+    form.append("email", formData.email);
+    form.append(
+      "phone",
+      formData.countryCode.replace("+", "") + formData.phone
+    );
+    form.append("subject", formData.subject);
+    form.append("message", formData.message);
+    form.append("captcha", recaptchaValue);
 
-    console.log("Submitting payload:", payload);
+    selectedFiles.forEach((file, index) => {
+      form.append("files", file);
+    });
 
     setLoading(true);
 
@@ -116,34 +119,26 @@ export default function Contact() {
         "http://localhost:5000/contact/submitcontact",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          body: form,
         }
       );
 
       const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Submission error:", data);
-        setResponseMessage(
-          "❌ Error: " +
-            data.error +
-            (data.details ? " (" + JSON.stringify(data.details) + ")" : "")
-        );
-      }
 
       if (response.ok) {
         setResponseMessage("✅ Form submitted successfully!");
         setFormData({
           fullName: "",
           email: "",
-          countryCode: "+91", // ensure you reset to default if needed
+          countryCode: "+91",
           phone: "",
+          subject: "",
+          files: [],
           message: "",
         });
+        setSelectedFiles([]);
       } else {
         setResponseMessage("❌ Error: " + data.error);
-        console.error("Submission error:", data);
       }
     } catch (error) {
       console.error("❌ Submission error:", error);
@@ -197,7 +192,7 @@ export default function Contact() {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                 />
-              </div>
+              </div>  
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Email Address*
@@ -239,6 +234,20 @@ export default function Contact() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">
+                  Subject*
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
+                  value={formData.subject}
+                  onChange={(e) =>
+                    setFormData({ ...formData, subject: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
                   Message*
                 </label>
                 <textarea
@@ -260,9 +269,11 @@ export default function Contact() {
                   <input
                     type="file"
                     multiple
-                    className="w-full bg-white/5 text-white file:bg-blue-600 file:text-white file:font-semibold file:rounded file:px-4 file:py-2 file:mr-4 rounded-lg border border-white/10 p-3 transition-all duration-300 hover:border-blue-400 focus:outline-none"
+                    name="files"
+                    className="..."
                     onChange={(e) => {
-                      const files = Array.from(e.target.files);
+                      const files = Array.from(e.target.files).slice(0, 5); // Optional: limit max to 5
+                      setSelectedFiles(files);
                     }}
                   />
                   <div className="absolute right-4 top-3 text-xs text-white/50 group-hover:text-blue-400 transition duration-300 pointer-events-none">

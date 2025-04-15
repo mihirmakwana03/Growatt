@@ -6,7 +6,8 @@ const validateContactForm = require("../utils/validateContactForm");
 const multer = require("multer");
 const upload = multer({ dest: 'uploads/' });
 const path = require("path");
-const RECAPTCHA_SECRET_KEY = "6LdtrvgqAAAAAN49NUdPeJRUVTnmwpUbMS7ah3Is"; // 🔹 Replace with your actual secret key
+const RECAPTCHA_SECRET_KEY = "6LdtrvgqAAAAAN49NUdPeJRUVTnmwpUbMS7ah3Is";
+const fs = require("fs");
 
 // 🛠️ Function to Verify reCAPTCHA
 const verifyRecaptcha = async (token) => {
@@ -29,13 +30,26 @@ const verifyRecaptcha = async (token) => {
     }
 };
 
+// Serve uploaded contact file from 'public/contactuploadsimg'
+router.get("/file/:filename", (req, res) => {
+    const filePath = path.join(__dirname, "../public/contactuploadsimg", req.params.filename);
+
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).json({ error: "File not found" });
+        }
+
+        res.sendFile(filePath);
+    });
+});
+
 // 📌 Route to Submit Contact Form
-router.post("/submitcontact", upload.single('file'), async (req, res) => {
+router.post("/submitcontact", upload.single('files'), async (req, res) => {
     try {
-
         console.log("📩 Received form data:", req.body);
+        console.log("📎 Uploaded file:", req.file);
 
-        const { captcha, ...formData } = req.body; // Extract reCAPTCHA token
+        const { captcha, ...formData } = req.body;
 
         // Step 1: Verify reCAPTCHA
         if (!captcha) {
@@ -49,20 +63,28 @@ router.post("/submitcontact", upload.single('file'), async (req, res) => {
 
         console.log("✅ reCAPTCHA verified!");
 
-        // Step 2: Validate Contact Form
+        // Step 2: Attach file info if present
+        if (req.file) {
+            formData.files = req.file.filename;  // or req.file.path, depending on your config
+        } else {
+            formData.files = ""; // or don't assign at all
+        }
+
+        // Step 3: Validate Contact Form
         const errors = validateContactForm(formData);
         if (errors) {
-            console.log("🚨 Form validation errors:", errors);  // <-- Add this
+            console.log("🚨 Form validation errors:", errors);
             return res.status(400).json({ error: "Validation failed", details: errors });
         }
 
-        // Step 3: Save Contact Form Data
+        // Step 4: Save to DB
         const newContact = new Contact(formData);
         await newContact.save();
+
         res.status(201).json({ message: "Form submitted successfully!" });
 
     } catch (error) {
-        console.error("Error in form submission:", error);
+        console.error("🔥 Error in form submission:", error.message, error.stack);
         res.status(500).json({ error: "Internal server error" });
     }
 });

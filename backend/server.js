@@ -77,6 +77,7 @@ app.use("/portfolio", portfolioRoutes);
 app.use("/uploadspdf", express.static(path.join(__dirname, "uploadspdf")));
 app.use("/email", emailRoutes);  // ✅ Mount email routes
 app.use("/contact", contactRoutes);  // ✅ Mount contact routes
+app.use('/contactuploadsimg', express.static(path.join(__dirname, 'public', 'contactuploadsimg')));
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
 app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);

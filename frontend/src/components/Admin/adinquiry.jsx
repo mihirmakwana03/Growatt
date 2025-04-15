@@ -93,7 +93,24 @@ function AdInquiry() {
                             <strong>Phone:</strong> +{contact.phone}
                         </p>
                         <p className="text-sm">
+                            <strong>Subject:</strong> {contact.subject}
+                        </p>
+                        <p className="text-sm">
                             <strong>Message:</strong> {contact.message}
+                        </p>
+                        <p className="text-sm">
+                          <strong>File:</strong> {contact.file ? (
+                            <a
+                                href={`http://localhost:5000/contact/file/${contact.file}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:underline"
+                            >
+                                {contact.file}
+                            </a>
+                          ) : (
+                            "No file attached"
+                          )}
                         </p>
 
                         <div className="flex justify-between mt-4">
