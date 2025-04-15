@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Cursor from './components/cursor';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -16,6 +17,12 @@ import Admin from './Admin';
 import TermsAndConditions from './components/TermsConditions';
 import AdminCarrer from './components/Admin/AdCareer';
 import PricingComponent from './components/pricing';
+
+// PrivateRoute Component
+const PrivateRoute = ({ children }) => {
+  const currentUser = useSelector((state) => state.user.currentUser);
+  return currentUser ? children : <Navigate to="/login" />;
+};
 
 function App() {
   const location = useLocation();
@@ -39,7 +46,14 @@ function App() {
           <Route path="/career" element={<Career />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset" element={<ResetPassword />} />
-          <Route path="/admin/*" element={<Admin />} />
+          <Route
+            path="/admin/*"
+            element={
+              <PrivateRoute>
+                <Admin />
+              </PrivateRoute>
+            }
+          />
           <Route path="/admin/carrer" element={<AdminCarrer />} />
           <Route path="/termsconditions" element={<TermsAndConditions />} />
           <Route path="/pricingcomponent" element={<PricingComponent />} />
@@ -49,7 +63,6 @@ function App() {
     </div>
   );
 }
-
 
 function AppWrapper() {
   return (
