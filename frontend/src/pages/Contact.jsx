@@ -12,6 +12,7 @@ import {
   Facebook as FacebookIcon,
   Twitter as TwitterIcon,
   Instagram as InstagramIcon,
+  Upload,
 } from "lucide-react";
 
 const socialLinks = [
@@ -192,7 +193,7 @@ export default function Contact() {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                 />
-              </div>  
+              </div>
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Email Address*
@@ -262,24 +263,29 @@ export default function Contact() {
                 ></textarea>
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2 text-white/80 tracking-wide">
-                  Upload Files <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium mb-2">
+                  Attachment
                 </label>
-                <div className="relative group">
-                  <input
-                    type="file"
-                    multiple
-                    name="files"
-                    className="..."
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files).slice(0, 5); // Optional: limit max to 5
-                      setSelectedFiles(files);
-                    }}
-                  />
-                  <div className="absolute right-4 top-3 text-xs text-white/50 group-hover:text-blue-400 transition duration-300 pointer-events-none">
-                    Max 5 files
-                  </div>
+                <div className="flex items-center justify-center w-full">
+                  <label className="w-full flex flex-col items-center px-4 py-6 bg-white/5 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10">
+                    <Upload className="w-8 h-8 mb-2" />
+                    <span className="text-sm">Click to upload file</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      multiple
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files).slice(0, 5); // Optional: limit max to 5
+                        setSelectedFiles(files);
+                      }}
+                    />
+                  </label>
                 </div>
+                {selectedFiles.length > 0 && (
+                  <p className="mt-2 text-sm text-gray-300">
+                    Selected files: {selectedFiles.map((file) => file.name).join(", ")}
+                  </p>
+                )}
               </div>
               <ReCAPTCHA
                 sitekey="6LdtrvgqAAAAABmj3YRQhv7d-YzEOjkts7TyH9gR"
