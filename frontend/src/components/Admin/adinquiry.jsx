@@ -99,17 +99,17 @@ function AdInquiry() {
                             <strong>Message:</strong> {contact.message}
                         </p>
                         <p className="text-sm">
-                          <strong>File:</strong> {contact.file ? (
+                          <strong>File:</strong> {contact.files ? (
                             <a
-                                href={`http://localhost:5000/contact/file/${contact.file}`}
+                                href={`http://localhost:5000/contactuploadsimg/${contact.files}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-500 hover:underline"
                             >
-                                {contact.file}
+                                {contact.files}
                             </a>
                           ) : (
-                            "No file attached"
+                            "No files attached"
                           )}
                         </p>
 

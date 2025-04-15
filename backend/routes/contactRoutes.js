@@ -4,7 +4,7 @@ const router = express.Router();
 const Contact = require("../models/Contact");
 const validateContactForm = require("../utils/validateContactForm");
 const multer = require("multer");
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: 'public/contactuploadsimg' });
 const path = require("path");
 const RECAPTCHA_SECRET_KEY = "6LdtrvgqAAAAAN49NUdPeJRUVTnmwpUbMS7ah3Is";
 const fs = require("fs");
@@ -41,6 +41,63 @@ router.get("/file/:filename", (req, res) => {
 
         res.sendFile(filePath);
     });
+});
+
+// Ensure uploaded files retain their original extensions
+router.post("/submitcontact", upload.single('files'), async (req, res) => {
+    try {
+        if (req.file) {
+            const originalExtension = path.extname(req.file.originalname);
+            const newFileName = `${req.file.filename}${originalExtension}`;
+            const newFilePath = path.join(req.file.destination, newFileName);
+
+            fs.renameSync(req.file.path, newFilePath);
+            req.file.filename = newFileName;
+            req.file.path = newFilePath;
+        }
+
+        // Proceed with the rest of the logic
+        console.log("📩 Received form data:", req.body);
+        console.log("📎 Uploaded file:", req.file);
+
+        const { captcha, ...formData } = req.body;
+
+        // Step 1: Verify reCAPTCHA
+        if (!captcha) {
+            return res.status(400).json({ error: "reCAPTCHA is missing." });
+        }
+
+        const isHuman = await verifyRecaptcha(captcha);
+        if (!isHuman) {
+            return res.status(400).json({ error: "reCAPTCHA verification failed." });
+        }
+
+        console.log("✅ reCAPTCHA verified!");
+
+        // Step 2: Attach file info if present
+        if (req.file) {
+            formData.files = req.file.filename;
+        } else {
+            formData.files = "";
+        }
+
+        // Step 3: Validate Contact Form
+        const errors = validateContactForm(formData);
+        if (errors) {
+            console.log("🚨 Form validation errors:", errors);
+            return res.status(400).json({ error: "Validation failed", details: errors });
+        }
+
+        // Step 4: Save to DB
+        const newContact = new Contact(formData);
+        await newContact.save();
+
+        res.status(201).json({ message: "Form submitted successfully!" });
+
+    } catch (error) {
+        console.error("🔥 Error in form submission:", error.message, error.stack);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 
 // 📌 Route to Submit Contact Form
@@ -107,7 +164,20 @@ router.delete("/delete/:id", async (req, res) => {
         if (!contact) {
             return res.status(404).json({ error: "Contact not found" });
         }
-        res.json({ message: "Contact deleted successfully" });
+
+        // Delete associated file if it exists
+        if (contact.files) {
+            const filePath = path.join(__dirname, "../uploads", contact.files);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error("Error deleting file:", err);
+                } else {
+                    console.log("File deleted successfully:", contact.files);
+                }
+            });
+        }
+
+        res.json({ message: "Contact and associated file deleted successfully" });
     } catch (error) {
         console.error("Error deleting contact:", error);
         res.status(500).json({ error: "Failed to delete contact" });
