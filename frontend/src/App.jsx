@@ -16,6 +16,7 @@ import Admin from './Admin';
 import TermsAndConditions from './components/TermsConditions';
 import AdminCarrer from './components/Admin/adcareer';
 import PricingComponent from './components/pricing';
+import Chatbot from './components/Chatbot';
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
       {!isAdminRoute && <Cursor />}
       {!isAdminRoute && <Navbar />}
       {!isAdminRoute && <WhatsApp />}
+      {!isAdminRoute && <Chatbot />}
 
       <main className="flex-grow">
         <Routes>

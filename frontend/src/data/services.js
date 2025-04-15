@@ -50,8 +50,8 @@ export const services = [
     ],
   },
   {
-    id: 'brand-identity-design',
-    title: 'Brand Identity Design',
+    id: 'brand-identity',
+    title: 'Brand Identity',
     description: 'Craft a cohesive and impactful brand identity that resonates with your audience.',
     icon: 'Brush',
     price: 'Starting from ₹7,500',
