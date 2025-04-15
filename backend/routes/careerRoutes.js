@@ -27,9 +27,15 @@ router.get("/", async (req, res) => {
 // ✅ Create a new career (POST Route)
 router.post("/", async (req, res) => {
     try {
+<<<<<<< HEAD
         const { jobTitle, shortDescription, jobLocation, jobType, jobEndDate } = req.body;
 
         if (!jobTitle || !shortDescription || !jobLocation || !jobType || !jobEndDate) {
+=======
+        const { jobTitle, shortDescription, jobResponse, jobRequire, jobLocation, jobType, jobEndDate } = req.body;
+
+        if (!jobTitle || !shortDescription || !jobRequire || !jobResponse || !jobLocation || !jobType || !jobEndDate) {
+>>>>>>> a4bac4c (first commit)
             return res.status(400).json({ message: "Missing required fields!" });
         }
 
@@ -45,6 +51,11 @@ router.post("/", async (req, res) => {
         const newCareer = new Career({
             jobTitle,
             shortDescription,
+<<<<<<< HEAD
+=======
+            jobResponse,
+            jobRequire,
+>>>>>>> a4bac4c (first commit)
             jobLocation,
             jobType,
             jobEndDate: formattedEndDate,

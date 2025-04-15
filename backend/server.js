@@ -25,7 +25,12 @@ if (!process.env.MONGO_URI || !process.env.SESSION_SECRET) {
 }
 
 // ✅ MongoDB Connection
+<<<<<<< HEAD
 mongoose.connect(process.env.MONGO_URI, {
+=======
+mongoose
+    .connect(process.env.MONGO_URI, {
+>>>>>>> a4bac4c (first commit)
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -67,7 +72,10 @@ app.use(
     })
 );
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> a4bac4c (first commit)
 // ✅ Routes
 app.use("/admin", require("./routes/adminRoutes")); // Admin login/logout
 app.use("/applications", applicationRoutes);
@@ -79,6 +87,10 @@ app.use("/contact", contactRoutes);  // ✅ Mount contact routes
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
 app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);
+<<<<<<< HEAD
+=======
+app.use("/uploadsimgtestimonial", express.static(path.join(__dirname, "uploadsimgtestimonial")));
+>>>>>>> a4bac4c (first commit)
 app.use('/membersImg', express.static(path.join(__dirname, 'public', 'membersImg')));
 app.use("/team", teamRoutes);
 

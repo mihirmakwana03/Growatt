@@ -21,6 +21,10 @@
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
+<<<<<<< HEAD
+=======
+    "react-countup": "^6.5.3",
+>>>>>>> a4bac4c (first commit)
     "react-dom": "^18.3.1",
     "react-fast-marquee": "^1.6.5",
     "react-google-recaptcha": "^3.1.0",

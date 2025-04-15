@@ -21,10 +21,19 @@ const upload = multer({ storage });
 // Add a new team member
 router.post("/add", upload.single("image"), async (req, res) => {
     try {
+<<<<<<< HEAD
         const { name, designation } = req.body;
         const newMember = new TeamMember({
             name,
             designation,
+=======
+        const { name, designation, bio, social } = req.body;
+        const newMember = new TeamMember({
+            name,
+            designation,
+            bio,
+            social,
+>>>>>>> a4bac4c (first commit)
             image: req.file.filename,
         });
 
@@ -64,4 +73,8 @@ router.delete("/delete/:id", async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 module.exports = router;
+=======
+module.exports = router;
+>>>>>>> a4bac4c (first commit)

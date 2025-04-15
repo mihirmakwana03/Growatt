@@ -12,6 +12,11 @@ const CareerSection = () => {
   const [formState, setFormState] = useState({
     jobTitle: "",
     shortDescription: "",
+<<<<<<< HEAD
+=======
+    jobResponse: "",
+    jobRequire: "",
+>>>>>>> a4bac4c (first commit)
     jobLocation: "",
     jobType: "full-time",
     jobEndDate: "",
@@ -58,6 +63,11 @@ const CareerSection = () => {
       setFormState({
         jobTitle: "",
         shortDescription: "",
+<<<<<<< HEAD
+=======
+        jobRequire: "",
+        jobResponse: "",
+>>>>>>> a4bac4c (first commit)
         jobLocation: "",
         jobType: "full-time",
         jobEndDate: "",
@@ -106,6 +116,18 @@ const CareerSection = () => {
                 <strong>Job Title:</strong> {career.jobTitle}
               </p>
               <p>
+<<<<<<< HEAD
+=======
+                <strong>Job Description:</strong> {career.shortDescription}
+              </p>
+              <p>
+                <strong>Responsibilities:</strong> {career.jobResponse}
+              </p>
+              <p>
+                <strong>Requirements:</strong> {career.jobRequire}
+              </p>
+              <p>
+>>>>>>> a4bac4c (first commit)
                 <strong>Location:</strong> {career.jobLocation}
               </p>
               <p>
@@ -147,7 +169,11 @@ const CareerSection = () => {
               </div>
 
               <div className="mb-4">
+<<<<<<< HEAD
                 <label className="block font-semibold mb-1">Short Description</label>
+=======
+                <label className="block font-semibold mb-1">Job Description</label>
+>>>>>>> a4bac4c (first commit)
                 <input
                   type="text"
                   className="w-full border rounded p-2 bg-white"
@@ -159,6 +185,33 @@ const CareerSection = () => {
               </div>
 
               <div className="mb-4">
+<<<<<<< HEAD
+=======
+                <label className="block font-semibold mb-1">Responsibilities</label>
+                <input
+                  type="text"
+                  className="w-full border rounded p-2 bg-white"
+                  name="jobResponse"
+                  value={formState.jobResponse}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block font-semibold mb-1">Requirements</label>
+                <input
+                  type="text"
+                  className="w-full border rounded p-2 bg-white"
+                  name="jobRequire"
+                  value={formState.jobRequire}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+>>>>>>> a4bac4c (first commit)
                 <label className="block font-semibold mb-1">Location</label>
                 <input
                   type="text"

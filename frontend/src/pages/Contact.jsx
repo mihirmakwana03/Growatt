@@ -200,7 +200,10 @@ export default function Contact() {
                                 <label className="block text-sm font-medium mb-2">Message *</label>
                                 <textarea
                                     required
+<<<<<<< HEAD
                                     placeholder="Describe the service you want, duration and style, color, or theme"
+=======
+>>>>>>> a4bac4c (first commit)
                                     rows={4}
                                     className="w-full bg-white/5 rounded-lg border border-white/10 p-3"
                                     value={formData.message}

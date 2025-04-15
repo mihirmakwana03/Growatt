@@ -254,6 +254,19 @@ export default function Career() {
                 <p className="text-gray-300 mb-4">{selectedJob.shortDescription}</p>
               </div>
 
+<<<<<<< HEAD
+=======
+              <div className="mb-8">
+                <h3 className="font-bold mb-2">Requirements</h3>
+                <p className="text-gray-300 mb-4">{selectedJob.jobRequire}</p>
+              </div>
+
+              <div className="mb-8">
+                <h3 className="font-bold mb-2">Responsiblities</h3>
+                <p className="text-gray-300 mb-4">{selectedJob.jobResponse}</p>
+              </div>
+
+>>>>>>> a4bac4c (first commit)
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2">Full Name *</label>
