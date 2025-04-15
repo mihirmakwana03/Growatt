@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { 
+      sender: "bot", 
+      text: "Hello! I'm GrowattBot. How can I help you today? 😊",
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+  ]);
   const [userInput, setUserInput] = useState("");
-  const [isOpen, setIsOpen] = useState(false); // toggle state
+  const [isOpen, setIsOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const botReply = (msg) => {
     const lower = msg.toLowerCase();
@@ -32,19 +45,22 @@ const Chatbot = () => {
     }
 
     if (lower.includes("portfolio"))
-      return "You can view our recent projects in the Portfolio section. Let me know if you want a direct link!";
+      return "You can view our recent projects in the Portfolio section. Let me know if you want a direct link! <a href='/portfolio' style='color: #00d4ff;'>Portfolio</a>";
 
     if (lower.includes("contact") || lower.includes("reach"))
-      return "You can reach us through the Contact page, or email us at info@growattinfosystem.com 📩";
+      return "You can reach us through the Contact page, or email us at growattinfosystem@gmail.com 📩";
 
-    if (lower.includes("location") || lower.includes("where are you"))
+    if (lower.includes("location"))
       return "We are based in India 🇮🇳, serving clients worldwide with passion and precision.";
+
+    if (lower.includes("address") || lower.includes("where are you located"))
+      return "We are located at 831, RK Empire, 150 Feet Ring Road, Rajkot, India, 360004.";
 
     if (lower.includes("pricing") || lower.includes("cost"))
       return "Our pricing depends on project scope. We'd love to offer a custom quote after a quick consultation.";
 
     if (lower.includes("working hours") || lower.includes("time"))
-      return "Our team is available Monday to Saturday, 10 AM to 7 PM IST. Feel free to drop a message anytime.";
+      return "Our team is available Monday to Saturday, 9 AM to 5 PM IST. Feel free to drop a message anytime. <a href='/contact' style='color: #00d4ff;'>Contact US</a>";
 
     if (lower.includes("career") || lower.includes("job"))
       return "Looking to join us? Visit the Career page to see current openings. We'd love to work with passionate minds!";
@@ -55,11 +71,34 @@ const Chatbot = () => {
   const sendMessage = () => {
     if (!userInput.trim()) return;
 
-    const userMessage = { sender: "user", text: userInput };
-    const reply = { sender: "bot", text: botReply(userInput) };
-
-    setMessages([...messages, userMessage, reply]);
+    // Add user message
+    const userMessage = { 
+      sender: "user", 
+      text: userInput,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
     setUserInput("");
+    setIsTyping(true);
+
+    // Simulate bot typing delay
+    setTimeout(() => {
+      const reply = { 
+        sender: "bot", 
+        text: botReply(userInput),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, reply]);
+      setIsTyping(false);
+    }, 1000 + Math.random() * 1500); // Random delay between 1-2.5 seconds
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
@@ -76,13 +115,21 @@ const Chatbot = () => {
             borderRadius: "50%",
           }}
         />
+        {!isOpen && messages.length > 1 && (
+          <div style={styles.notificationBadge}>
+            {messages.filter(m => m.sender === "bot").length}
+          </div>
+        )}
       </div>
 
       {/* Chatbox window */}
       {isOpen && (
         <div style={styles.container}>
           <div style={styles.header}>
-            <span>GrowattBot 💬</span>
+            <div style={styles.botInfo}>
+              <span style={styles.botName}>GrowattBot</span>
+              <span style={styles.status}>Online</span>
+            </div>
             <button onClick={() => setIsOpen(false)} style={styles.closeButton}>
               ×
             </button>
@@ -90,18 +137,33 @@ const Chatbot = () => {
 
           <div style={styles.chatBox}>
             {messages.map((msg, index) => (
-              <div
+              <div 
                 key={index}
                 style={{
-                  ...styles.message,
-                  alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                  backgroundColor:
-                    msg.sender === "user" ? "#4a90e2" : "#2a2a2a",
-                  color: msg.sender === "user" ? "#fff" : "#f0f0f0",
+                  ...styles.messageContainer,
+                  justifyContent: msg.sender === "user" ? "flex-end" : "flex-start",
                 }}
-                dangerouslySetInnerHTML={{ __html: msg.text }} 
-              />
+              >
+                <div
+                  style={{
+                    ...styles.message,
+                    backgroundColor: msg.sender === "user" ? "#4a90e2" : "#2a2a2a",
+                    color: msg.sender === "user" ? "#fff" : "#f0f0f0",
+                  }}
+                >
+                  <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                  <div style={styles.timestamp}>{msg.timestamp}</div>
+                </div>
+              </div>
             ))}
+            {isTyping && (
+              <div style={styles.typingIndicator}>
+                <div style={styles.typingDot}></div>
+                <div style={styles.typingDot}></div>
+                <div style={styles.typingDot}></div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
 
           <div style={styles.inputArea}>
@@ -109,11 +171,15 @@ const Chatbot = () => {
               type="text"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={handleKeyDown}
               style={styles.input}
               placeholder="Type a message..."
             />
-            <button onClick={sendMessage} style={styles.button}>
+            <button 
+              onClick={sendMessage} 
+              style={styles.button}
+              disabled={!userInput.trim()}
+            >
               Send
             </button>
           </div>
@@ -137,13 +203,32 @@ const styles = {
     borderRadius: "50%",
     boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
     padding: "5px",
+    transition: "transform 0.2s",
+    transform: "scale(1)",
+  },
+  notificationBadge: {
+    position: "absolute",
+    top: "-5px",
+    right: "-5px",
+    backgroundColor: "#ff4757",
+    color: "white",
+    borderRadius: "50%",
+    width: "20px",
+    height: "20px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "12px",
+    fontWeight: "bold",
   },
   container: {
     position: "fixed",
-    bottom: "80px",
+    bottom: "90px",
     left: "20px",
     width: "350px",
+    maxWidth: "calc(100vw - 40px)",
     height: "500px",
+    maxHeight: "calc(100vh - 110px)",
     border: "1px solid #2e2e2e",
     borderRadius: "12px",
     padding: "10px",
@@ -161,8 +246,19 @@ const styles = {
     alignItems: "center",
     paddingBottom: "10px",
     borderBottom: "1px solid #333",
+  },
+  botInfo: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  botName: {
     fontWeight: "bold",
     color: "#00d4ff",
+    fontSize: "16px",
+  },
+  status: {
+    fontSize: "12px",
+    color: "#00c853",
   },
   closeButton: {
     background: "transparent",
@@ -170,6 +266,7 @@ const styles = {
     fontSize: "20px",
     cursor: "pointer",
     color: "#ccc",
+    padding: "5px 10px",
   },
   chatBox: {
     flex: 1,
@@ -182,14 +279,39 @@ const styles = {
     borderRadius: "8px",
     marginBottom: "10px",
   },
+  messageContainer: {
+    display: "flex",
+    width: "100%",
+  },
   message: {
     padding: "10px 14px",
     borderRadius: "15px",
-    maxWidth: "70%",
+    maxWidth: "80%",
     lineHeight: "1.4",
     fontSize: "15px",
     wordWrap: "break-word",
     boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+  },
+  timestamp: {
+    fontSize: "10px",
+    opacity: 0.7,
+    textAlign: "right",
+    marginTop: "4px",
+  },
+  typingIndicator: {
+    display: "flex",
+    padding: "8px 12px",
+    borderRadius: "15px",
+    backgroundColor: "#2a2a2a",
+    alignSelf: "flex-start",
+    gap: "5px",
+  },
+  typingDot: {
+    width: "8px",
+    height: "8px",
+    borderRadius: "50%",
+    backgroundColor: "#ccc",
+    animation: "typingAnimation 1.4s infinite ease-in-out",
   },
   inputArea: {
     display: "flex",
@@ -202,6 +324,7 @@ const styles = {
     border: "1px solid #444",
     backgroundColor: "#101010",
     color: "#fff",
+    outline: "none",
   },
   button: {
     padding: "10px 16px",
@@ -211,6 +334,15 @@ const styles = {
     color: "#fff",
     fontWeight: "bold",
     cursor: "pointer",
+    transition: "opacity 0.2s",
+  },
+  "@keyframes typingAnimation": {
+    "0%, 60%, 100%": {
+      transform: "translateY(0)",
+    },
+    "30%": {
+      transform: "translateY(-5px)",
+    },
   },
 };
 

@@ -19,6 +19,8 @@ const teamStoriesRoutes = require("./routes/TeamStories");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const API_KEY = "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";
+
 // ✅ Validate Required Environment Variables
 if (!process.env.MONGO_URI || !process.env.SESSION_SECRET) {
     console.error("❌ ERROR: Missing required environment variables! Check .env file.");
