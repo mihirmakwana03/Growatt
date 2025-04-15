@@ -14,7 +14,7 @@ import Login from './components/Admin/login';
 import ResetPassword from './components/Admin/ResetPassword';
 import Admin from './Admin';
 import TermsAndConditions from './components/TermsConditions';
-import AdminCarrer from './components/Admin/AdCareer';
+import AdminCarrer from './components/Admin/adcareer';
 import PricingComponent from './components/pricing';
 
 function App() {

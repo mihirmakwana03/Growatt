@@ -1,8 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import * as Icons from 'lucide-react';
-import { services } from '../data/services';
+import { useEffect, useRef, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import * as Icons from "lucide-react";
+import { services } from "../data/services";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function ServiceDetail() {
   const { service: serviceId } = useParams();
@@ -10,11 +13,15 @@ export default function ServiceDetail() {
   const service = services.find((s) => s.id === serviceId);
   const sectionRef = useRef(null);
 
+  // ✅ Added state to store portfolio
+  const [portfolio, setPortfolio] = useState([]);
+
   useEffect(() => {
-    if (!service) {
-      navigate('/services');
-    }
-  }, [service, navigate]);
+    axios
+      .get("http://localhost:5000/portfolio")
+      .then((res) => setPortfolio(res.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   if (!service) return null;
 
@@ -77,24 +84,29 @@ export default function ServiceDetail() {
           </div>
         </div>
 
-        {/* Portfolio */}
-        <div>
-          <h2 className="text-3xl font-bold text-center mb-12">Recent Work</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {service.portfolio.map((item, index) => (
+        {/* Portfolio - Filtered for "Logo Design" */}
+        <h2 className="text-3xl font-bold text-center mb-12">Recent Works</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {portfolio
+            .filter(
+              (item) =>
+                item.type.toLowerCase().replace(/\s+/g, "-") ===
+                serviceId.toLowerCase()
+            )
+            .map((item, index) => (
               <div key={index} className="glass overflow-hidden rounded-xl">
                 <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-64 object-cover"
-                />
+                    crossOrigin="anonymous"
+                    src={`${API_URL}${item.imageUrl}`}
+                    alt={item.title}
+                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                   <p className="text-gray-300">{item.description}</p>
                 </div>
               </div>
             ))}
-          </div>
         </div>
       </div>
     </div>
