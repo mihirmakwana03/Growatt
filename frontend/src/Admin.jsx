@@ -12,6 +12,7 @@ import AddTestimonial from "./components/Admin/AddTestimonial";
 import AdDashboard from "./components/Admin/AdDashboard";
 import AddTeamMember from "./components/Admin/AdAboutUs";
 import TeamStories from "./components/Admin/TeamStories";
+import PricingListForm from "./components/Admin/pricingList";
 
 const Admin = () => {
   return (
@@ -19,7 +20,7 @@ const Admin = () => {
       <Routes>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="portfolio" element={<Portfolio />} />
-        <Route path="services" element={<Service />} />
+        <Route path="pricing" element={<PricingListForm />} />
         <Route path="career" element={<AdCareer />} />
         <Route path="inquiry" element={<AdInquiry />} />
         <Route path="application" element={<Application />} />

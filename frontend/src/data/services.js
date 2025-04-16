@@ -36,18 +36,6 @@ export const services = [
         description: 'Providing final files in all required formats',
       },
     ],
-    portfolio: [
-      {
-        title: 'Tech Startup Rebrand',
-        image: 'https://images.unsplash.com/photo-1629752187687-3d3c7ea3a21b',
-        description: 'Modern and dynamic logo design for an innovative tech company',
-      },
-      {
-        title: 'Restaurant Chain Identity',
-        image: 'https://images.unsplash.com/photo-1588421357574-87938a86fa28',
-        description: 'Elegant and appetizing logo design for a premium restaurant chain',
-      },
-    ],
   },
   {
     id: 'brand-identity',

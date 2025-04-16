@@ -11,6 +11,7 @@ import { BsPersonPlusFill } from "react-icons/bs";
 import { MdOutlineReviews } from "react-icons/md";
 import { RiTeamFill } from "react-icons/ri";
 import { AiOutlineTeam } from "react-icons/ai";
+import { MdOutlinePriceChange } from "react-icons/md";
 
 const Sidebar = () => {
   return (
@@ -52,6 +53,21 @@ const Sidebar = () => {
           >
             <TfiBriefcase className="mr-2" />
             <span>Portfolio</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/pricing"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
+            }
+          >
+            <MdOutlinePriceChange className="mr-2" />
+            <span>Service Pricing</span>
           </NavLink>
         </li>
         <li>

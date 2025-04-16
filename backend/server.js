@@ -15,6 +15,7 @@ const customerRoutes = require("./routes/customerRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
 const teamRoutes = require("./routes/teamRoutes");
 const teamStoriesRoutes = require("./routes/TeamStories");
+const pricingRoutes = require("./routes/pricingRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -81,13 +82,14 @@ app.use("/email", emailRoutes);  // ✅ Mount email routes
 app.use("/contact", contactRoutes);  // ✅ Mount contact routes
 app.use('/contactuploadsimg', express.static(path.join(__dirname, 'public', 'contactuploadsimg')));
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
-app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
+app.use("/customersform", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);
 app.use("/uploadsimgtestimonial", express.static(path.join(__dirname, "uploadsimgtestimonial")));
 app.use('/membersImg', express.static(path.join(__dirname, 'public', 'membersImg')));
 app.use("/team", teamRoutes);
 app.use('/teamstories', teamStoriesRoutes);
 app.use('/storyImg', express.static(path.join(__dirname, 'public', 'storyImg')));
+app.use('/pricing', pricingRoutes);
 
 app.get("/", (req, res) => {
     res.send("🚀 Server is running!");
