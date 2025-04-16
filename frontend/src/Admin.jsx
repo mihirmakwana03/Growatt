@@ -12,12 +12,14 @@ import AddTestimonial from "./components/Admin/AddTestimonial";
 import AdDashboard from "./components/Admin/AdDashboard";
 import AddTeamMember from "./components/Admin/AdAboutUs";
 import Signup from "./components/Admin/signup";
+import Profile from "./components/Admin/adProfile";
 
 const Admin = () => {
   return (
     <MainLayout>
       <Routes>
-        <Route path="/" element={<Signup />} />
+        <Route path="/addAdmin" element={<Signup />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="services" element={<Service />} />

@@ -19,26 +19,7 @@ import TermsAndConditions from './components/TermsConditions';
 import AdminCarrer from './components/Admin/AdCareer';
 import PricingComponent from './components/pricing';
 import PrivateRoute from './PrivateRoute';
-import { logout } from './redux/admin/adminSlice.js';
-
-// SessionManager Component
-const SessionManager = () => {
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.currentUser);
-
-  useEffect(() => {
-    if (currentUser) {
-      const sessionTimeout = setTimeout(() => {
-        dispatch(logout()); // Dispatch logout action when session expires
-        alert('Your session has expired. You have been logged out.');
-      }, 3600000); // Set session timeout (e.g., 1 hour = 3600000ms)
-
-      return () => clearTimeout(sessionTimeout); // Clear timeout on component unmount
-    }
-  }, [currentUser, dispatch]);
-
-  return null; // This component doesn't render anything
-};
+import Logout from './components/Admin/logout';
 
 function App() {
   const location = useLocation();
@@ -48,7 +29,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
-      <SessionManager /> {/* Add SessionManager here */}
       {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <Cursor />}
       {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <Navbar />}
       {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <WhatsApp />}
@@ -63,6 +43,7 @@ function App() {
           <Route path="/career" element={<Career />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/logout" element={<Logout />} />
           <Route
             path="/admin/*"
             element={

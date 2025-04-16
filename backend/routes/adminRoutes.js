@@ -1,9 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { check } = require("../controllers/admin.controller");
+const { check, updateAdmin } = require("../controllers/admin.controller");
+const { verify } = require("jsonwebtoken");
+const verifyToken = require("../utils/verifyAdmin");
 const router = express.Router();
 
-router.get("/check", check);
+router.get("/check", (req, res, next) => { return check(req, res, next); });
+router.post("/update/:id", verifyToken, updateAdmin);
 
 module.exports = router;
 

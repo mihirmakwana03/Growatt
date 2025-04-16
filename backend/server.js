@@ -14,8 +14,10 @@ const applicationRoutes = require("./routes/applications");
 const customerRoutes = require("./routes/customerRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
 const teamRoutes = require("./routes/teamRoutes");
-const admin = require("./routes/adminRoutes");
+const admin = require("./routes/adminRoutes.js");
 const authRoutes = require("./routes/auth.route.js");
+const cookieParser = require("cookie-parser");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,6 +41,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // ✅ Middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: function (origin, callback) {
         const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
@@ -74,7 +77,7 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Routes
-app.use("/admin/login", admin); // Admin login/logout
+app.use("/admin/user", admin); // Admin login/logout
 app.use("/admin/auth", authRoutes); // Auth routes
 app.use("/applications", applicationRoutes);
 app.use("/careers", (careerRoutes));

@@ -15,8 +15,8 @@ const adminSlice = createSlice({
             state.loading = true;
         },
         signInSuccess: (state, action) => {
-            // Set a session expiration timestamp (1 minute from now)
-            const sessionExpiry = Date.now() + 60 * 1000; // 60000 ms = 1 minute
+            // Set a session expiration timestamp (5 minutes from now)
+            const sessionExpiry = Date.now() + 5 * 60 * 1000; // 300000 ms = 5 minutes
             
             // You can store it along with the user data:
             state.currentUser = { 
@@ -26,9 +26,9 @@ const adminSlice = createSlice({
             state.loading = false;
             state.error = null;
             
-            // (Optional) Set a cookie that expires in 1 minute.
-            // js-cookie uses expiration in days: 1 minute = 1/1440 day.
-            Cookies.set('sessionExpiry', sessionExpiry, { expires: 1 / 1440 });
+            // (Optional) Set a cookie that expires in 5 minutes.
+            // js-cookie uses expiration in days: 5 minutes = 5/1440 day.
+            Cookies.set('sessionExpiry', sessionExpiry, { expires: 5 / 1440 });
         },
         signInFailure: (state, action) => {
             state.error = action.payload;
