@@ -3,7 +3,7 @@ const router = express.Router();
 
 const PricingPlan = require('../models/Plan');
 
-router.get('/', async (req, res) => {
+router.get('/', async (_, res) => {
     try {
         const plans = await PricingPlan.find();
         res.json(plans);
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.put("/:title", (req, res) => {
+router.put("/:title", async (req, res) => {
     try {
         const decodedTitle = decodeURIComponent(req.params.title);
         const updatedData = req.body;
@@ -20,25 +20,16 @@ router.put("/:title", (req, res) => {
         console.log("Decoded Title:", decodedTitle);
         console.log("Request Body:", updatedData);
 
-        const index = pricingDetails.findIndex(
-            (item) => item.title === decodedTitle
+        const updatedCard = await PricingPlan.findOneAndUpdate(
+            { title: decodedTitle },
+            updatedData,
+            { new: true }
         );
 
-        if (index === -1) {
+        if (!updatedCard) {
             console.log("Card not found for title:", decodedTitle);
-            return res
-                .status(404)
-                .json({ message: "Card with this title not found" });
+            return res.status(404).json({ message: "Card with this title not found" });
         }
-
-        const existingCard = pricingDetails[index];
-        const updatedCard = {
-            ...existingCard,
-            ...updatedData,
-            id: existingCard.id,
-        };
-
-        pricingDetails[index] = updatedCard;
 
         console.log("Updated Card:", updatedCard);
         res.status(200).json(updatedCard);

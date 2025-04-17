@@ -86,7 +86,7 @@ const PricingListForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const updatedCard = {
       ...editCard,
       ...formData,
@@ -94,17 +94,17 @@ const PricingListForm = () => {
       advancePrice: parseFloat(formData.advancePrice),
       premiumPrice: parseFloat(formData.premiumPrice),
     };
-  
+
     // Update the card locally
     setPricingDetails((prevDetails) =>
       prevDetails.map((item) =>
         item.title === editCard.title ? updatedCard : item
       )
     );
-  
+
     // Send updated card to server using title in URL
     fetch(`http://localhost:5000/pricing/${encodeURIComponent(editCard.title)}`, {
-      method: "PUT",
+      method: "PUT", // Use PUT if updating an existing record
       headers: {
         "Content-Type": "application/json",
       },
@@ -124,7 +124,7 @@ const PricingListForm = () => {
         console.error("Error updating card:", error);
       });
   };
-  
+
   return (
     <div className="container mx-auto px-6 py-12 bg-black text-white">
       <h2 className="text-center text-4xl font-bold text-blue-500 mb-8">
