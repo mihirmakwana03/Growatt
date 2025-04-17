@@ -84,8 +84,9 @@ const TeamMembers = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h2 className="text-center text-blue-600 text-2xl font-bold mb-6">Our Team</h2>
+        <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+            <h1 className="text-center text-2xl font-bold text-blue-600">Our Team</h1>
+                <hr className="border-gray-600 my-4"/>
             <div className="flex flex-col md:flex-row justify-between items-center mb-6">
                 <button
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
@@ -94,7 +95,7 @@ const TeamMembers = () => {
                     + Add Member
                 </button>
                 <select
-                    className="mt-4 md:mt-0 border border-gray-300 rounded px-3 py-2"
+                    className="mt-4 md:mt-0 border border-gray-200 rounded px-3 py-2 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     value={filter}
                     onChange={handleFilterChange}
                 >
@@ -106,6 +107,7 @@ const TeamMembers = () => {
                     ))}
                 </select>
             </div>
+
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {filteredMembers.map((member) => (

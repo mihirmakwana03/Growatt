@@ -67,19 +67,21 @@ const AddTestimonial = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-50">
+            <h1 className="text-center text-2xl font-bold text-blue-600">Testimonials</h1>
+            <hr className="my-4 border-gray-600" />
             {/* Header Section */}
             <div className="flex justify-between items-center mb-4">
-                <button
+            <button
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     onClick={() => setIsModalOpen(true)}
                 >
                     Add Testimonial
                 </button>
                 <div className="flex items-center">
-                    <label className="mr-2">Filter by Rating:</label>
+                    <label className="mr-2 text-gray-900">Filter by Rating:</label>
                     <select
-                        className="border rounded px-2 py-1"
+                        className="border border-gray-300 rounded px-2 py-1 text-gray-900 bg-white"
                         onChange={(e) => setFilterRating(Number(e.target.value))}
                     >
                         <option value="0">All</option>
@@ -96,7 +98,7 @@ const AddTestimonial = () => {
             {selectedIds.length > 0 && (
                 <div className="text-right mb-4">
                     <button
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        className="bg-red-100 text-red-800 px-4 py-2 rounded hover:bg-red-200"
                         onClick={handleDelete}
                     >
                         Delete Selected ({selectedIds.length})
@@ -106,15 +108,15 @@ const AddTestimonial = () => {
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center text-black">
+                <div className="fixed inset-0 bg-gray-200 bg-opacity-75 flex justify-center items-center text-gray-900">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                         <h3 className="text-lg font-bold mb-4">Add Testimonial</h3>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
-                                <label className="block font-medium mb-1">Name</label>
+                                <label className="block font-medium mb-1 text-gray-900">Name</label>
                                 <input
                                     type="text"
-                                    className="w-full border rounded px-3 py-2 bg-white"
+                                    className="w-full border border-gray-300 rounded px-3 py-2 bg-white text-gray-900"
                                     placeholder="Your Name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
@@ -122,9 +124,9 @@ const AddTestimonial = () => {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block font-medium mb-1">Message</label>
+                                <label className="block font-medium mb-1 text-gray-900">Message</label>
                                 <textarea
-                                    className="w-full border rounded px-3 py-2 bg-white"
+                                    className="w-full border border-gray-300 rounded px-3 py-2 bg-white text-gray-900"
                                     rows="3"
                                     placeholder="Your testimonial..."
                                     value={message}
@@ -133,7 +135,7 @@ const AddTestimonial = () => {
                                 ></textarea>
                             </div>
                             <div className="mb-4 text-center">
-                                <label className="block font-medium mb-2">Rate Us</label>
+                                <label className="block font-medium mb-2 text-gray-900">Rate Us</label>
                                 <div className="flex justify-center">
                                     {[...Array(5)].map((_, index) => (
                                         <FaStar
@@ -151,13 +153,13 @@ const AddTestimonial = () => {
                             <div className="flex justify-end">
                                 <button
                                     type="submit"
-                                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
+                                    className="bg-green-100 text-green-800 px-4 py-2 rounded hover:bg-green-200 mr-2"
                                 >
                                     Submit
                                 </button>
                                 <button
                                     type="button"
-                                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
+                                    className="bg-gray-100 text-gray-900 px-4 py-2 rounded hover:bg-gray-200"
                                     onClick={() => setIsModalOpen(false)}
                                 >
                                     Cancel
@@ -175,20 +177,18 @@ const AddTestimonial = () => {
                     .map((testimonial) => (
                         <div
                             key={testimonial._id}
-                            className={`border rounded-lg p-4 shadow ${
-                                selectedIds.includes(testimonial._id) ? "border-red-500" : ""
-                            }`}
+                            className={`border ${selectedIds.includes(testimonial._id) ? "border-red-300" : "border-gray-200"} rounded-lg p-4 shadow bg-white`}
                         >
                             <div className="flex justify-between items-center mb-2">
-                                <h6 className="font-bold">{testimonial.name}</h6>
+                                <h6 className="font-bold text-gray-900">{testimonial.name}</h6>
                                 <input
                                     type="checkbox"
-                                    className="form-checkbox"
+                                    className="form-checkbox text-blue-600"
                                     checked={selectedIds.includes(testimonial._id)}
                                     onChange={() => toggleSelect(testimonial._id)}
                                 />
                             </div>
-                            <p className="text-sm mb-2">{testimonial.message}</p>
+                            <p className="text-sm text-gray-700 mb-2">{testimonial.message}</p>
                             <div className="flex">
                                 {[...Array(5)].map((_, index) => (
                                     <FaStar

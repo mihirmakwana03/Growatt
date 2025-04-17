@@ -81,8 +81,9 @@ const CareerSection = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-center text-2xl font-bold text-blue-600 mb-4">Career Opportunity</h2>
+    <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+      <h1 className="text-center text-2xl font-bold text-blue-600 mb-4">Career Opportunity</h1>
+        <hr className="my-4 border-gray-600" />
 
       {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
 
@@ -93,7 +94,6 @@ const CareerSection = () => {
         >
           <FaUpload /> Add Career
         </button>
-        <hr className="my-4" />
       </div>
 
       {loading && <p className="text-center text-gray-500">Loading careers...</p>}

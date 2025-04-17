@@ -62,9 +62,9 @@ function AdInquiry() {
     };
 
     return (
-        <div className="container mx-auto px-4 mt-5">
-            <h1 className="text-center text-2xl font-bold text-yellow-500">Contact Submissions</h1>
-            <hr className="my-4" />
+        <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+            <h1 className="text-center text-2xl font-bold text-blue-600">Contact Submissions</h1>
+            <hr className="my-4 border-gray-600" />
 
             {/* ✅ Loading Spinner */}
             {loading && (

@@ -22,14 +22,14 @@ const Admin = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="portfolio" element={<Portfolio />} />
-        <Route path="services" element={<Service />} />
         <Route path="career" element={<AdCareer />} />
+        <Route path="team" element={<AddTeamMember />} />
         <Route path="inquiry" element={<AdInquiry />} />
         <Route path="application" element={<Application />} />
         <Route path="customerform" element={<CustomerForm />} />
         <Route path="testimonials" element={<AddTestimonial />} />
+        <Route path="services" element={<Service />} />
         <Route path="dashboard" element={<AdDashboard />} />
-        <Route path="team" element={<AddTeamMember />} />
       </Routes>
     </MainLayout>
   );

@@ -34,7 +34,7 @@ const AdDashboard = () => {
     if (error) return <p className="text-center text-red-500 mt-3">{error}</p>;
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 min-h-screen bg-gray-300">
             <h2 className="text-2xl font-bold text-blue-600 text-center mb-6">Admin Dashboard</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div className="bg-blue-500 text-white p-6 rounded-lg shadow-md flex flex-col items-center">

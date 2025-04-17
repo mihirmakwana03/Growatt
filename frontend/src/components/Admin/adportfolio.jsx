@@ -71,8 +71,9 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-center text-2xl font-bold text-blue-600 mb-6">Portfolio</h2>
+    <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+            <h1 className="text-center text-2xl font-bold text-blue-600">Portfolio</h1>
+            <hr className="my-4 border-gray-600" />
 
       {/* Add Portfolio Button */}
       <div className="text-center mb-6">

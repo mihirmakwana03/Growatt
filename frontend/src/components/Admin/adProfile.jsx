@@ -52,7 +52,7 @@ const AdProfile = () => {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex items-center justify-center min-h-screen bg-gray-300">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Admin Profile</h1>
                 <form onSubmit={handleSubmit} className="space-y-4 flex flex-col items-center justify-center">
@@ -91,15 +91,20 @@ const AdProfile = () => {
                     </button>
                 </form>
                 <div className="flex justify-between mt-6">
-                    <span className="text-red-700 cursor-pointer">Delete Account</span>
-                    <span className="text-red-700 cursor-pointer">Sign Out</span>
+                    <span className="text-red-500 cursor-pointer">Delete Account</span>
+                    <span 
+                        className="text-red-500 cursor-pointer" 
+                        onClick={() => window.location.href = "/logout"}
+                    >
+                        Sign Out
+                    </span>
                 </div>
                 <div className="mt-4 text-center text-gray-600 text-sm">
                     <p>Joined on: {new Date(currentUser.createdAt).toLocaleDateString()}</p>
                 </div>
-            <div className="text-red-500 text-center mt-4">
-                {error ? error : ''}
-            </div>
+                <div className="text-red-500 text-center mt-4">
+                    {error ? error : ''}
+                </div>
             </div>
         </div>
     );

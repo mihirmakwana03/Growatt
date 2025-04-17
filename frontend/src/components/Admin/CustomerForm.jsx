@@ -117,7 +117,9 @@ const CustomerForm = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+            <h1 className="text-center text-2xl font-bold text-blue-600">Customer Form</h1>
+            <hr className="my-4 border-gray-600" />
       {/* Floating Button */}
       <button
         className="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600"
@@ -249,33 +251,33 @@ const CustomerForm = () => {
       )}
 
       {/* Search and Filter Section */}
-      <div className="flex flex-col md:flex-row gap-4 mt-6">
-        <input
-          type="text"
-          className="w-full md:w-1/2 border border-gray-300 rounded p-2"
-          placeholder="Search by name..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <select
-          className="w-full md:w-1/3 border border-gray-300 rounded p-2"
-          onChange={handleServiceFilterChange}
-        >
-          <option value="">All Service</option>
-          <option value="Logo Design">Logo Design</option>
-          <option value="Brand Identity">Brand Identity</option>
-          <option value="Packaging Design">Packaging Design</option>
-          <option value="Business Card Design">Business Card Design</option>
-          <option value="Letterheads">Letterheads</option>
-          <option value="Label Design">Label Design</option>
-          <option value="Flex Design">Flex Design</option>
-          <option value="Catalog Design">Catalog Design</option>
-          <option value="Brochure Design">Brochure Design</option>
-          <option value="Banner Design">Banner Design</option>
-        </select>
-      </div>
+        <div className="flex flex-col md:flex-row gap-4 mt-6 bg-gray-200 p-4 rounded shadow">
+          <input
+            type="text"
+            className="w-full md:w-1/2 border border-gray-400 rounded p-2 bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <select
+            className="w-full md:w-1/3 border border-gray-400 rounded p-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onChange={handleServiceFilterChange}
+          >
+            <option value="">All Service</option>
+            <option value="Logo Design">Logo Design</option>
+            <option value="Brand Identity">Brand Identity</option>
+            <option value="Packaging Design">Packaging Design</option>
+            <option value="Business Card Design">Business Card Design</option>
+            <option value="Letterheads">Letterheads</option>
+            <option value="Label Design">Label Design</option>
+            <option value="Flex Design">Flex Design</option>
+            <option value="Catalog Design">Catalog Design</option>
+            <option value="Brochure Design">Brochure Design</option>
+            <option value="Banner Design">Banner Design</option>
+          </select>
+        </div>
 
-      {/* Customer Cards */}
+        {/* Customer Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
         {filteredCustomers.length > 0 ? (
           filteredCustomers.map((customer) => (

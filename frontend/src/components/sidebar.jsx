@@ -19,37 +19,40 @@ const Sidebar = () => {
   return (
     <>
       {/* Floating user profile at top right */}
-      <div className="absolute top-4 right-4 z-50">
-        <div className="relative">
-          <button
-            onClick={toggleProfileOptions}
-            className="w-10 h-10 rounded-full overflow-hidden focus:outline-none border border-gray-300"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop"
-              alt="User Profile"
-              className="w-full h-full object-cover"
-            />
-          </button>
-          {showProfileOptions && (
-            <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded shadow-md">
-              <NavLink 
+        <div className="absolute top-4 right-4 z-50">
+          <div className="relative">
+            <button
+          onClick={toggleProfileOptions}
+          className="w-10 h-10 rounded-full overflow-hidden focus:outline-none border border-gray-300"
+            >
+          <img
+            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop"
+            alt="User Profile"
+            className="w-full h-full object-cover"
+          />
+            </button>
+            {showProfileOptions && (
+          <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded shadow-md">
+            <NavLink 
               to="/admin/profile"
-              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                Edit Profile
-              </NavLink>
-              <NavLink
-                to="/logout"
-                className="block w-full text-left px-4 py-2 text-sm text-red-500 dark:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                Logout
-              </NavLink>
-            </div>
-          )}
+              onClick={() => setShowProfileOptions(false)}
+              className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Edit Profile
+            </NavLink>
+            <NavLink
+              to="/logout"
+              onClick={() => setShowProfileOptions(false)}
+              className="block w-full text-left px-4 py-2 text-sm text-red-500 dark:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              Logout
+            </NavLink>
+          </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Sidebar */}
+        {/* Sidebar */}
       <div className="flex flex-col w-64 h-screen p-4 bg-gray-100 dark:bg-gray-900">
         {/* Logo Section */}
         <NavLink to="/" className="flex items-center mb-6">
