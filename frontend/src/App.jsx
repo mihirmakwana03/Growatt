@@ -26,12 +26,13 @@ function App() {
   const isAdminRoute = location.pathname.startsWith('/admin');
   const isLoginRoute = location.pathname === '/login';
   const isResetPasswordRoute = location.pathname === '/reset';
+  const isLogout = location.pathname === '/logout';
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col">
-      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <Cursor />}
-      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <Navbar />}
-      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <WhatsApp />}
+      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && !isLogout && <Cursor />}
+      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && !isLogout && <Navbar />}
+      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && !isLogout && <WhatsApp />}
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
