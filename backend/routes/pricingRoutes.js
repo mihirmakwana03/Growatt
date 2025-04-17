@@ -12,4 +12,40 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.put("/:title", (req, res) => {
+    try {
+        const decodedTitle = decodeURIComponent(req.params.title);
+        const updatedData = req.body;
+
+        console.log("Decoded Title:", decodedTitle);
+        console.log("Request Body:", updatedData);
+
+        const index = pricingDetails.findIndex(
+            (item) => item.title === decodedTitle
+        );
+
+        if (index === -1) {
+            console.log("Card not found for title:", decodedTitle);
+            return res
+                .status(404)
+                .json({ message: "Card with this title not found" });
+        }
+
+        const existingCard = pricingDetails[index];
+        const updatedCard = {
+            ...existingCard,
+            ...updatedData,
+            id: existingCard.id,
+        };
+
+        pricingDetails[index] = updatedCard;
+
+        console.log("Updated Card:", updatedCard);
+        res.status(200).json(updatedCard);
+    } catch (err) {
+        console.error("Server error:", err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 module.exports = router;

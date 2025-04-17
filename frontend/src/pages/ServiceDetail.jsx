@@ -105,7 +105,8 @@ export default function ServiceDetail() {
                       <span className="text-xl text-gray-300">/ project</span>
                     </div>
                     <ul className="mb-12 space-y-6 text-left text-lg">
-                      {pricing?.features?.slice(0, 6).map((f, i) => (
+                      <li className="text-[#FF6B6B]">Basic Features +</li>
+                      {pricing?.features?.slice(3, 6).map((f, i) => (
                         <li key={i} className="flex items-center space-x-4">
                           <Icons.Check className="w-6 h-6 text-primary" />
                           <span>{f}</span>
@@ -128,7 +129,8 @@ export default function ServiceDetail() {
                     <span className="text-xl text-gray-300">/ project</span>
                   </div>
                   <ul className="mb-12 space-y-6 text-left text-lg text-gray-300">
-                    {pricing?.features?.map((f, i) => (
+                  <li className="text-[#FF6B6B]">Advance Features +</li>
+                    {pricing?.features?.slice(6, 10).map((f, i) => (
                       <li key={i} className="flex items-center space-x-4">
                         <Icons.Check className="w-6 h-6 text-primary" />
                         <span>{f}</span>
