@@ -34,7 +34,7 @@ const Sidebar = () => {
           {showProfileOptions && (
             <div className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded shadow-md">
               <NavLink 
-              to="/admin/adminProfile"
+              to="/admin/profile"
               className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                 Edit Profile
               </NavLink>

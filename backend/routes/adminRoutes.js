@@ -1,6 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { check, updateAdmin } = require("../controllers/admin.controller");
+const { check, updateAdmin } = require("../controllers/admin.controller.js");
 const { verify } = require("jsonwebtoken");
 const verifyToken = require("../utils/verifyAdmin");
 const router = express.Router();

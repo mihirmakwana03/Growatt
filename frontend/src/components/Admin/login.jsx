@@ -33,7 +33,8 @@ const Login = () => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(formData),
+          credentials: 'include' // 🔥 Important: This allows cookies to be sent and received
         });
       } catch (networkError) {
         console.error('Network error:', networkError);

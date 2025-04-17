@@ -38,9 +38,11 @@ const login = async (req, res, next) => {
 
         res.cookie("access_token", token, {
             httpOnly: true,
-            expires: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
             // secure: process.env.NODE_ENV === "production",
             // sameSite: "strict",
+            sameSite: 'lax'
+
         }).status(200).json(others);
 
     } catch (err) {

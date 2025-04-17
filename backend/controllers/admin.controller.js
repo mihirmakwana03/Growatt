@@ -27,7 +27,7 @@ const updateAdmin = async (req, res, next) => {
         res.status(200).json(others);
 
     } catch (error) {
-        next(error);
+        next(errorHandler(500, "Internal Server Error"));
     }
 }
 
