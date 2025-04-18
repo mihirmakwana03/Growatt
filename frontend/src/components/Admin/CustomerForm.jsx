@@ -46,7 +46,13 @@ const CustomerForm = () => {
       setCustomers([...customers, response.data]);
       setFilteredCustomers([...customers, response.data]);
       setShowModal(false);
-      setNewCustomer({ name: "", email: "", contact: "", service: "", datetime: "" });
+      setNewCustomer({
+        name: "",
+        email: "",
+        contact: "",
+        service: "",
+        datetime: "",
+      });
 
       // Refresh the page after submission
       window.location.reload();
@@ -76,12 +82,17 @@ const CustomerForm = () => {
       );
     }
     if (selectedService) {
-      filtered = filtered.filter((customer) => customer.service === selectedService);
+      filtered = filtered.filter(
+        (customer) => customer.service === selectedService
+      );
     }
     if (startDate && endDate) {
       filtered = filtered.filter((customer) => {
         const customerDate = new Date(customer.datetime);
-        return customerDate >= new Date(startDate) && customerDate <= new Date(endDate);
+        return (
+          customerDate >= new Date(startDate) &&
+          customerDate <= new Date(endDate)
+        );
       });
     }
     setFilteredCustomers(filtered);
@@ -115,13 +126,17 @@ const CustomerForm = () => {
 
   return (
     <div className="container mx-auto p-4 bg-gray-300 min-h-screen">
-      <h2 className="text-center text-2xl font-bold text-blue-600 mb-6">Customers List</h2>
+      <h2 className="text-center text-2xl font-bold text-blue-600 mb-6">
+        Customers List
+      </h2>
       <hr className="my-4 border-gray-600" />
 
       {/* Filter Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">Search by Name</label>
+          <label className="mb-1 font-medium text-gray-700">
+            Search by Name
+          </label>
           <input
             type="text"
             className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
@@ -131,7 +146,9 @@ const CustomerForm = () => {
           />
         </div>
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">Filter by Service</label>
+          <label className="mb-1 font-medium text-gray-700">
+            Filter by Service
+          </label>
           <select
             className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
             value={selectedService}
@@ -195,7 +212,7 @@ const CustomerForm = () => {
       {/* Add Customer Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-md w-full max-w-lg p-6">
+          <div className="bg-black rounded-md w-full max-w-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <h5 className="text-xl font-bold">Add New Customer</h5>
               <button
@@ -241,7 +258,9 @@ const CustomerForm = () => {
                 <option value="Logo Design">Logo Design</option>
                 <option value="Brand Identity">Brand Identity</option>
                 <option value="Packaging Design">Packaging Design</option>
-                <option value="Business Card Design">Business Card Design</option>
+                <option value="Business Card Design">
+                  Business Card Design
+                </option>
                 <option value="Letterheads">Letterheads</option>
                 <option value="Label Design">Label Design</option>
                 <option value="Flex Design">Flex Design</option>
@@ -279,8 +298,13 @@ const CustomerForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {filteredCustomers.length > 0 ? (
           filteredCustomers.map((customer) => (
-            <div key={customer._id} className="bg-white text-black shadow rounded p-4">
-              <h5 className="text-blue-600 text-lg font-bold mb-2">{customer.name}</h5>
+            <div
+              key={customer._id}
+              className="bg-white text-black shadow rounded p-4"
+            >
+              <h5 className="text-blue-600 text-lg font-bold mb-2">
+                {customer.name}
+              </h5>
               <p className="mb-1">
                 <span className="font-medium">Email:</span> {customer.email}
               </p>

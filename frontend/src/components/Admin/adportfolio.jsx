@@ -18,7 +18,9 @@ const Portfolio = () => {
 
   const fetchPortfolio = async () => {
     try {
-      const response = await axios.get(`${API_URL}/portfolio?timestamp=${new Date().getTime()}`);
+      const response = await axios.get(
+        `${API_URL}/portfolio?timestamp=${new Date().getTime()}`
+      );
       setData(response.data);
     } catch (error) {
       console.error("❌ Fetch error:", error);
@@ -72,8 +74,10 @@ const Portfolio = () => {
 
   return (
     <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
-            <h1 className="text-center text-2xl font-bold text-blue-600">Portfolio</h1>
-            <hr className="my-4 border-gray-600" />
+      <h1 className="text-center text-2xl font-bold text-blue-600">
+        Portfolio
+      </h1>
+      <hr className="my-4 border-gray-600" />
 
       {/* Add Portfolio Button */}
       <div className="text-center mb-6">
@@ -89,7 +93,10 @@ const Portfolio = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {data.length > 0 ? (
           data.map((item) => (
-            <div key={item._id} className="bg-white shadow rounded-md overflow-hidden relative">
+            <div
+              key={item._id}
+              className="bg-white shadow rounded-md overflow-hidden relative"
+            >
               <img
                 src={`${API_URL}${item.imageUrl}`}
                 alt={item.title}
@@ -97,7 +104,9 @@ const Portfolio = () => {
                 crossOrigin="anonymous"
               />
               <div className="p-4">
-                <h6 className="font-bold text-lg text-black truncate">{item.title}</h6>
+                <h6 className="font-bold text-lg text-black truncate">
+                  {item.title}
+                </h6>
                 <p className="text-sm text-gray-600 truncate">
                   Category: <span className="text-blue-600">{item.type}</span>
                 </p>
@@ -111,13 +120,20 @@ const Portfolio = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 col-span-full">No Portfolio Items Available</p>
+          <p className="text-center text-gray-500 col-span-full">
+            No Portfolio Items Available
+          </p>
         )}
       </div>
 
       {/* Upload Modal */}
-      <dialog id="uploadModal" className="rounded-md shadow-lg w-full max-w-lg p-6 bg-white text-black">
-        <h4 className="text-xl font-bold text-blue-600 mb-4">Upload Portfolio Item</h4>
+      <dialog
+        id="uploadModal"
+        className="rounded-md shadow-lg w-full max-w-lg p-6 bg-white text-black"
+      >
+        <h4 className="text-xl font-bold text-blue-600 mb-4">
+          Upload Portfolio Item
+        </h4>
         <form onSubmit={handleUpload}>
           <div className="mb-4">
             <label className="block font-bold mb-2">Title</label>
@@ -151,7 +167,9 @@ const Portfolio = () => {
               <option value="Logo Design">🎨 Logo Design</option>
               <option value="Brand Identity">🆔 Brand Identity</option>
               <option value="Packaging Design">📦 Packaging Design</option>
-              <option value="Business Card Design">💼 Business Card Design</option>
+              <option value="Business Card Design">
+                💼 Business Card Design
+              </option>
               <option value="Letterheads">✍ Letterheads</option>
               <option value="Label Design">🏷 Label Design</option>
               <option value="Flex Design">📐 Flex Design</option>
