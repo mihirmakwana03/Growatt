@@ -3,6 +3,7 @@ const axios = require("axios");
 const router = express.Router();
 const Contact = require("../models/Contact");
 const validateContactForm = require("../utils/validateContactForm");
+const ContactInfo = require("../models/ContactInfo"); // Ensure this path is correct
 const multer = require("multer");
 const upload = multer({ dest: 'public/contactuploadsimg' });
 const path = require("path");
@@ -181,6 +182,32 @@ router.delete("/delete/:id", async (req, res) => {
     } catch (error) {
         console.error("Error deleting contact:", error);
         res.status(500).json({ error: "Failed to delete contact" });
+    }
+});
+
+router.get('/info', async (req, res) => {
+    try {
+        console.log('Fetching contact info...');
+        const contactInfo = await ContactInfo.find({});
+        console.log('Data fetched:', contactInfo);
+        res.json(contactInfo);
+    } catch (error) {
+        console.error('Error fetching contact info:', error);
+        res.status(500).json({ error: 'Failed to fetch contact info' });
+    }
+});
+
+router.post('/add', async (req, res) => {
+    try {
+        const { icon, title, content, link } = req.body;
+
+        const newContact = new ContactInfo({ icon, title, content, link });
+        await newContact.save();
+
+        res.status(201).json({ message: 'Contact info added successfully' });
+    } catch (error) {
+        console.error('Error adding contact info:', error);
+        res.status(500).json({ error: 'Failed to add contact info' });
     }
 });
 

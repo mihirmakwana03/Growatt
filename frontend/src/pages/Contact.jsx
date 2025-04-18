@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -34,44 +34,19 @@ const socialLinks = [
   },
 ];
 
-const contactInfo = [
-  {
-    icon: Phone,
-    title: "Phone",
-    content: "+91 81558 08720",
-    link: "tel:+918155808720",
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    content: "growattinfosystem@gmail.com",
-    link: "mailto:growattinfosystem@gmail.com",
-  },
-  {
-    icon: MapPin,
-    title: "Address",
-    content: "831, RK Empire, 150 Feet Ring Road, Rajkot, India, 360004",
-    link: "https://maps.app.goo.gl/iVuTrZzhYArCbiVM9",
-  },
-  {
-    icon: Clock,
-    title: "Business Hours",
-    content: "Mon - Sat: 9:00 AM - 5:00 PM",
-  },
-];
-
 export default function Contact() {
+  const [contactInfo, setContactInfo] = useState([]);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     countryCode: "+91",
-    subject: "",
-    files: [],
     phone: "",
+    subject: "",
     message: "",
   });
   const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [contactInfoLoading, setContactInfoLoading] = useState(true);
   const [responseMessage, setResponseMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const { ref, inView } = useInView({
@@ -79,7 +54,47 @@ export default function Contact() {
     triggerOnce: true,
   });
 
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      setContactInfoLoading(true);
+      try {
+        const response = await fetch("http://localhost:5000/contact/info");
+        if (!response.ok) {
+          throw new Error("Failed to fetch contact info");
+        }
+        const data = await response.json();
+        setContactInfo(
+          data.map((item) => ({
+            ...item,
+            icon: getIconForTitle(item.title),
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching contact info:", error);
+        setContactInfo([]);
+      } finally {
+        setContactInfoLoading(false);
+      }
+    };
+
+    fetchContactInfo(); // <- don't forget to call the function
+  }, []);
+
+  const getIconForTitle = (title) => {
+    switch (title.toLowerCase()) {
+      case "phone":
+        return Phone;
+      case "email":
+        return Mail;
+      case "address":
+        return MapPin;
+      default:
+        return Phone;
+    }
+  };
+
   const handleSubmit = async (e) => {
+    e.preventDefault();
     e.preventDefault();
 
     if (!recaptchaValue) {
@@ -134,7 +149,6 @@ export default function Contact() {
           countryCode: "+91",
           phone: "",
           subject: "",
-          files: [],
           message: "",
         });
         setSelectedFiles([]);
@@ -171,7 +185,6 @@ export default function Contact() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {/* Contact Form */}
           <motion.div
             ref={ref}
             initial={{ opacity: 0, x: -20 }}
@@ -283,7 +296,8 @@ export default function Contact() {
                 </div>
                 {selectedFiles.length > 0 && (
                   <p className="mt-2 text-sm text-gray-300">
-                    Selected files: {selectedFiles.map((file) => file.name).join(", ")}
+                    Selected files:{" "}
+                    {selectedFiles.map((file) => file.name).join(", ")}
                   </p>
                 )}
               </div>
@@ -310,6 +324,7 @@ export default function Contact() {
               <p className="mt-3 text-center">{responseMessage}</p>
             )}
           </motion.div>
+
           <motion.div
             ref={ref}
             initial={{ opacity: 0, x: 20 }}
@@ -319,28 +334,38 @@ export default function Contact() {
           >
             <div className="glass p-8 rounded-xl">
               <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
-              <div className="grid gap-6">
-                {contactInfo.map((info, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="p-3 bg-primary/20 rounded-lg">
-                      <info.icon className="w-6 h-6 text-primary" />
+              {contactInfoLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : contactInfo.length > 0 ? (
+                <div className="grid gap-6">
+                  {contactInfo.map((info, index) => (
+                    <div key={index} className="flex items-start gap-4">
+                      <div className="p-3 bg-primary/20 rounded-lg">
+                        <info.icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium mb-1">{info.title}</h3>
+                        {info.link ? (
+                          <a
+                            href={info.link}
+                            className="text-gray-300 hover:text-primary transition-colors"
+                          >
+                            {info.content}
+                          </a>
+                        ) : (
+                          <p className="text-gray-300">{info.content}</p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-medium mb-1">{info.title}</h3>
-                      {info.link ? (
-                        <a
-                          href={info.link}
-                          className="text-gray-300 hover:text-primary transition-colors"
-                        >
-                          {info.content}
-                        </a>
-                      ) : (
-                        <p className="text-gray-300">{info.content}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-300 text-center py-8">
+                  Contact information is currently unavailable.
+                </p>
+              )}
             </div>
 
             <div className="glass p-8 rounded-xl">

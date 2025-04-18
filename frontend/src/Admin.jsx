@@ -13,6 +13,7 @@ import AdDashboard from "./components/Admin/AdDashboard";
 import AddTeamMember from "./components/Admin/AdAboutUs";
 import TeamStories from "./components/Admin/TeamStories";
 import PricingListForm from "./components/Admin/pricingList";
+import ContactManager from "./components/Admin/contactInfo";
 
 const Admin = () => {
   return (
@@ -29,6 +30,7 @@ const Admin = () => {
         <Route path="dashboard" element={<AdDashboard />} />
         <Route path="team" element={<AddTeamMember />} />
         <Route path="teamstories" element={<TeamStories />} />
+        <Route path="contactinfo" element={<ContactManager />} />
       </Routes>
     </MainLayout>
   );

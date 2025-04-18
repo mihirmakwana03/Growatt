@@ -12,6 +12,7 @@ import { MdOutlineReviews } from "react-icons/md";
 import { RiTeamFill } from "react-icons/ri";
 import { AiOutlineTeam } from "react-icons/ai";
 import { MdOutlinePriceChange } from "react-icons/md";
+import { MdContacts } from "react-icons/md";
 
 const Sidebar = () => {
   return (
@@ -115,7 +116,7 @@ const Sidebar = () => {
             <span>Team Members</span>
           </NavLink>
         </li>
-        
+
         <li>
           <NavLink
             to="/admin/inquiry"
@@ -129,6 +130,21 @@ const Sidebar = () => {
           >
             <SiGooglebigquery className="mr-2" />
             <span>Inquiry</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/contactinfo"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
+            }
+          >
+            <MdContacts className="mr-2" />
+            <span>Contact Information</span>
           </NavLink>
         </li>
         <li>
