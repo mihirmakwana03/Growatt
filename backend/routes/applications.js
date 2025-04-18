@@ -64,6 +64,33 @@ router.post("/", upload.single("resume"), async (req, res) => {
     }
 });
 
+// ✅ Update application status by ID
+router.patch("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (!status) {
+            return res.status(400).json({ error: "Status is required." });
+        }
+
+        const application = await Application.findById(id);
+
+        if (!application) {
+            return res.status(404).json({ error: "Application not found." });
+        }
+
+        application.status = status;
+        await application.save();
+
+        res.json({ message: "✅ Application status updated successfully!", application });
+    } catch (err) {
+        console.error("❌ Error updating application status:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
 // ✅ Fetch all Applications
 router.get("/", async (req, res) => {
     try {

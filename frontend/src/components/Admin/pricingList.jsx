@@ -130,6 +130,7 @@ const PricingListForm = () => {
       <h2 className="text-center text-4xl font-bold text-blue-500 mb-8">
         Our Service Pricing Plans
       </h2>
+      <hr className="mb-4" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {pricingDetails.length === 0 ? (
           <div className="text-center text-lg text-white">

@@ -9,6 +9,7 @@ const applicationSchema = new mongoose.Schema({
     twelvethPercentage: { type: Number, required: true },
     bachelorsDegree: { type: Number, required: true },
     resume: { type: String, required: true }, // Store file path as a string
+    status: { type: String, default: "Pending" }, // Added status field
 }, { timestamps: true });
 
 module.exports = mongoose.model("Application", applicationSchema);
