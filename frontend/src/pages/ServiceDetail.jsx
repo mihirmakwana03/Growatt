@@ -57,8 +57,8 @@ export default function ServiceDetail() {
           className="text-center mb-16"
         >
           <Icon className="w-16 h-16 text-primary mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 pb-10 text-gradient">
-            {service.title}
+          <h1 className="text-4xl md:text-5xl font-bold mb-2 pb-4">
+            <span className="text-gradient">{service.title}</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             {service.description}
@@ -66,11 +66,11 @@ export default function ServiceDetail() {
         </motion.div>
 
         {pricing && (
-          <section className="py-5">
+          <section className="py-2">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-8 lg:space-y-0 lg:items-center">
+              <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-8 lg:space-y-0 lg:items-stretch">
                 {/* BASIC PLAN */}
-                <div className="flex flex-col mx-auto max-w-sm text-gray-100 rounded-2xl bg-gray-800 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-700">
+                <div className="flex flex-col h-full mx-auto max-w-sm text-gray-100 rounded-2xl bg-gray-800 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-700">
                   <h3 className="text-2xl font-bold mb-3">Basic</h3>
                   <div className="flex items-center mb-6">
                     <span className="mr-2 text-6xl font-semibold">
@@ -86,17 +86,17 @@ export default function ServiceDetail() {
                       </li>
                     ))}
                   </ul>
-                  <button className="py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-primary/80">
+                  <button className="mt-auto py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-primary/80">
                     Purchase Plan
                   </button>
                 </div>
 
                 {/* ADVANCED PLAN */}
-                <div className="flex flex-col mx-auto max-w-sm text-gray-100 rounded-2xl bg-primary/10 transition-all duration-500 hover:bg-primary/20">
+                <div className="flex flex-col h-full mx-auto max-w-sm text-gray-100 rounded-2xl bg-primary/10 transition-all duration-500 hover:bg-primary/20">
                   <div className="uppercase bg-gradient-to-r from-primary to-secondary rounded-t-2xl p-3 text-center text-white">
                     MOST POPULAR
                   </div>
-                  <div className="p-6 xl:py-9 xl:px-12">
+                  <div className="p-6 xl:py-9 xl:px-12 flex flex-col flex-1">
                     <h3 className="text-2xl font-bold mb-3">Advanced</h3>
                     <div className="flex items-center mb-6">
                       <span className="mr-2 text-6xl font-semibold text-primary">
@@ -113,14 +113,14 @@ export default function ServiceDetail() {
                         </li>
                       ))}
                     </ul>
-                    <button className="py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-primary/80">
+                    <button className="mt-auto py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit block mx-auto hover:bg-primary/80">
                       Purchase Plan
                     </button>
                   </div>
                 </div>
 
                 {/* PREMIUM PLAN */}
-                <div className="flex flex-col mx-auto max-w-sm text-gray-100 rounded-2xl bg-gray-800 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-700">
+                <div className="flex flex-col h-full mx-auto max-w-sm text-gray-100 rounded-2xl bg-gray-800 p-6 xl:py-9 xl:px-12 transition-all duration-500 hover:bg-gray-700">
                   <h3 className="text-2xl font-bold mb-3">Premium</h3>
                   <div className="flex items-center mb-6">
                     <span className="mr-2 text-6xl font-semibold">
@@ -129,7 +129,7 @@ export default function ServiceDetail() {
                     <span className="text-xl text-gray-300">/ project</span>
                   </div>
                   <ul className="mb-12 space-y-6 text-left text-lg text-gray-300">
-                  <li className="text-[#FF6B6B]">Advance Features +</li>
+                    <li className="text-[#FF6B6B]">Advance Features +</li>
                     {pricing?.features?.slice(6, 10).map((f, i) => (
                       <li key={i} className="flex items-center space-x-4">
                         <Icons.Check className="w-6 h-6 text-primary" />
@@ -137,7 +137,7 @@ export default function ServiceDetail() {
                       </li>
                     ))}
                   </ul>
-                  <button className="py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-primary/80">
+                  <button className="mt-auto py-2.5 px-5 bg-primary shadow-sm rounded-full transition-all duration-500 text-base text-white font-semibold text-center w-fit mx-auto hover:bg-primary/80">
                     Purchase Plan
                   </button>
                 </div>
@@ -146,7 +146,7 @@ export default function ServiceDetail() {
           </section>
         )}
 
-        <div className="mb-16">
+        <div className="my-16">
           <h2 className="text-3xl font-bold text-center mb-12">Our Process</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {service.process.map((step) => (
@@ -163,7 +163,7 @@ export default function ServiceDetail() {
           </div>
         </div>
 
-        {/* Portfolio - Filtered*/}
+        {/* Portfolio - Filtered */}
         <h2 className="text-3xl font-bold text-center mb-12">Recent Works</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {portfolio

@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaUserPlus, FaTrash } from "react-icons/fa";
+import { FaTrash, FaDownload, FaRedo, FaPlus } from "react-icons/fa";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/customersform";
+const API_URL = "http://localhost:5000/customers";
 
 const CustomerForm = () => {
-  const [formData, setFormData] = useState({
+  const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedService, setSelectedService] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // New Customer State
+  const [newCustomer, setNewCustomer] = useState({
     name: "",
     email: "",
     contact: "",
@@ -13,13 +24,7 @@ const CustomerForm = () => {
     datetime: "",
   });
 
-  const [customers, setCustomers] = useState([]);
-  const [filteredCustomers, setFilteredCustomers] = useState([]);
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedService, setSelectedService] = useState("");
 
   useEffect(() => {
     fetchCustomers();
@@ -27,14 +32,34 @@ const CustomerForm = () => {
 
   useEffect(() => {
     filterCustomers();
-  }, [searchTerm, selectedService, customers]);
+  }, [searchTerm, selectedService, startDate, endDate, customers]);
 
+  // Handle New Customer Input
+  const handleNewCustomerChange = (e) => {
+    setNewCustomer({ ...newCustomer, [e.target.name]: e.target.value });
+  };
+
+  // Add New Customer
+  const handleAddCustomer = async () => {
+    try {
+      const response = await axios.post(API_URL, newCustomer);
+      setCustomers([...customers, response.data]);
+      setFilteredCustomers([...customers, response.data]);
+      setShowModal(false);
+      setNewCustomer({ name: "", email: "", contact: "", service: "", datetime: "" });
+
+      // Refresh the page after submission
+      window.location.reload();
+    } catch (error) {
+      console.error("❌ Error adding customer:", error);
+    }
+  };
+
+  // Fetch customer data
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(API_URL);
-      const data = Array.isArray(response.data)
-        ? response.data
-        : response.data.customers || [];
+      const data = Array.isArray(response.data) ? response.data : [];
       setCustomers(data);
       setFilteredCustomers(data);
     } catch (error) {
@@ -42,15 +67,7 @@ const CustomerForm = () => {
     }
   };
 
-  const deleteCustomer = async (id) => {
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      setCustomers(customers.filter((customer) => customer._id !== id));
-    } catch (error) {
-      console.error("❌ Error deleting customer:", error.response?.data || error);
-    }
-  };
-
+  // Filter customers based on search input, service, and date range
   const filterCustomers = () => {
     let filtered = customers;
     if (searchTerm) {
@@ -61,240 +78,220 @@ const CustomerForm = () => {
     if (selectedService) {
       filtered = filtered.filter((customer) => customer.service === selectedService);
     }
+    if (startDate && endDate) {
+      filtered = filtered.filter((customer) => {
+        const customerDate = new Date(customer.datetime);
+        return customerDate >= new Date(startDate) && customerDate <= new Date(endDate);
+      });
+    }
     setFilteredCustomers(filtered);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  // Reset filters
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setSelectedService("");
+    setStartDate("");
+    setEndDate("");
+    setFilteredCustomers(customers);
   };
 
-  const handleServiceFilterChange = (e) => {
-    setSelectedService(e.target.value);
-  };
+  // Download Excel file
+  const handleDownloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredCustomers);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      try {
-        const response = await axios.post(API_URL, formData, {
-          headers: { "Content-Type": "application/json" },
-        });
-        setSuccessMessage(response.data.message);
-        handleReset();
-        setShowModal(false);
-        fetchCustomers();
-      } catch (error) {
-        console.error("❌ Error submitting form:", error);
-      }
-    }
-  };
-
-  const validateForm = () => {
-    let errors = {};
-    if (!formData.name.trim()) errors.name = "Customer name is required!";
-    if (!formData.email.match(/^\S+@\S+\.\S+$/)) errors.email = "Invalid email format!";
-    if (!formData.contact.match(/^\d{10}$/)) errors.contact = "Contact number must be 10 digits!";
-    if (!formData.service) errors.service = "Please select a service!";
-    if (!formData.datetime) errors.datetime = "Please select date & time!";
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleReset = () => {
-    setFormData({
-      name: "",
-      email: "",
-      contact: "",
-      service: "",
-      datetime: "",
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
     });
-    setErrors({});
-    setSuccessMessage("");
-  };
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    saveAs(data, "Filtered_Customers_Data.xlsx");
   };
 
   return (
     <div className="container mx-auto p-4">
-      {/* Floating Button */}
-      <button
-        className="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600"
-        onClick={() => setShowModal(true)}
-      >
-        <FaUserPlus />
-      </button>
+      <h2 className="text-center text-2xl font-bold text-blue-600 mb-6">Customers List</h2>
+      <hr className="my-4 border-gray-600" />
 
-      {/* Modal for Customer Form */}
+      {/* Filter Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Search by Name</label>
+          <input
+            type="text"
+            className="border rounded p-2"
+            placeholder="Enter customer name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Filter by Service</label>
+          <select
+            className="border rounded p-2"
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+          >
+            <option value="">All Services</option>
+            <option value="Logo Design">Logo Design</option>
+            <option value="Brand Identity">Brand Identity</option>
+            <option value="Packaging Design">Packaging Design</option>
+            <option value="Business Card Design">Business Card Design</option>
+            <option value="Letterheads">Letterheads</option>
+            <option value="Label Design">Label Design</option>
+            <option value="Flex Design">Flex Design</option>
+            <option value="Catalog Design">Catalog Design</option>
+            <option value="Brochure Design">Brochure Design</option>
+            <option value="Banner Design">Banner Design</option>
+          </select>
+        </div>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">Start Date</label>
+          <input
+            type="date"
+            className="border rounded p-2"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium">End Date</label>
+          <input
+            type="date"
+            className="border rounded p-2"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Buttons Row */}
+      <div className="flex justify-center gap-4 mb-6">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
+          onClick={() => setShowModal(true)}
+        >
+          <FaPlus /> Add Customer
+        </button>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700"
+          onClick={handleDownloadExcel}
+        >
+          <FaDownload /> Download
+        </button>
+        <button
+          className="bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-700"
+          onClick={handleResetFilters}
+        >
+          <FaRedo /> Reset
+        </button>
+      </div>
+
+      {/* Add Customer Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-md w-full max-w-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h4 className="text-xl font-bold text-blue-600">Add Customer</h4>
+              <h5 className="text-xl font-bold">Add New Customer</h5>
               <button
-                className="text-gray-500 hover:text-gray-700"
+                type="button"
+                className="text-gray-600 hover:text-gray-800"
                 onClick={() => setShowModal(false)}
               >
-                ✖
+                &#x2715;
               </button>
             </div>
-            {successMessage && (
-              <div className="bg-green-100 text-green-700 p-2 rounded mb-4">
-                {successMessage}
-              </div>
-            )}
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-medium mb-1">Customer Name</label>
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.name && (
-                    <small className="text-red-500">{errors.name}</small>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Email ID</label>
-                  <input
-                    type="email"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.email && (
-                    <small className="text-red-500">{errors.email}</small>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Contact No</label>
-                  <input
-                    type="tel"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="contact"
-                    value={formData.contact}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.contact && (
-                    <small className="text-red-500">{errors.contact}</small>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Select Service</label>
-                  <select
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="service"
-                    value={formData.service}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Choose a service</option>
-                    <option value="Logo Design">Logo Design</option>
-                    <option value="Brand Identity">Brand Identity</option>
-                    <option value="Packaging Design">Packaging Design</option>
-                    <option value="Business Card Design">Business Card Design</option>
-                    <option value="Letterheads">Letterheads</option>
-                    <option value="Label Design">Label Design</option>
-                    <option value="Flex Design">Flex Design</option>
-                    <option value="Catalog Design">Catalog Design</option>
-                    <option value="Brochure Design">Brochure Design</option>
-                    <option value="Banner Design">Banner Design</option>
-                  </select>
-                  {errors.service && (
-                    <small className="text-red-500">{errors.service}</small>
-                  )}
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block font-medium mb-1">Select Date & Time</label>
-                  <input
-                    type="datetime-local"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="datetime"
-                    value={formData.datetime}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.datetime && (
-                    <small className="text-red-500">{errors.datetime}</small>
-                  )}
-                </div>
-              </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
-                >
-                  ✅ Add Details
-                </button>
-                <button
-                  type="button"
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            <div className="space-y-3">
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                name="name"
+                placeholder="Name"
+                value={newCustomer.name}
+                onChange={handleNewCustomerChange}
+              />
+              <input
+                type="email"
+                className="w-full border rounded p-2"
+                name="email"
+                placeholder="Email"
+                value={newCustomer.email}
+                onChange={handleNewCustomerChange}
+              />
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                name="contact"
+                placeholder="Contact"
+                value={newCustomer.contact}
+                onChange={handleNewCustomerChange}
+              />
+              <select
+                className="w-full border rounded p-2"
+                name="service"
+                value={newCustomer.service}
+                onChange={handleNewCustomerChange}
+              >
+                <option value="">Select Service</option>
+                <option value="Logo Design">Logo Design</option>
+                <option value="Brand Identity">Brand Identity</option>
+                <option value="Packaging Design">Packaging Design</option>
+                <option value="Business Card Design">Business Card Design</option>
+                <option value="Letterheads">Letterheads</option>
+                <option value="Label Design">Label Design</option>
+                <option value="Flex Design">Flex Design</option>
+                <option value="Catalog Design">Catalog Design</option>
+                <option value="Brochure Design">Brochure Design</option>
+                <option value="Banner Design">Banner Design</option>
+              </select>
+              <input
+                type="datetime-local"
+                className="w-full border rounded p-2"
+                name="datetime"
+                value={newCustomer.datetime}
+                onChange={handleNewCustomerChange}
+              />
+            </div>
+            <div className="flex justify-end mt-6 gap-4">
+              <button
+                className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                onClick={handleAddCustomer}
+              >
+                Add Customer
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Search and Filter Section */}
-      <div className="flex flex-col md:flex-row gap-4 mt-6">
-        <input
-          type="text"
-          className="w-full md:w-1/2 border border-gray-300 rounded p-2"
-          placeholder="Search by name..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <select
-          className="w-full md:w-1/3 border border-gray-300 rounded p-2"
-          onChange={handleServiceFilterChange}
-        >
-          <option value="">All Service</option>
-          <option value="Logo Design">Logo Design</option>
-          <option value="Brand Identity">Brand Identity</option>
-          <option value="Packaging Design">Packaging Design</option>
-          <option value="Business Card Design">Business Card Design</option>
-          <option value="Letterheads">Letterheads</option>
-          <option value="Label Design">Label Design</option>
-          <option value="Flex Design">Flex Design</option>
-          <option value="Catalog Design">Catalog Design</option>
-          <option value="Brochure Design">Brochure Design</option>
-          <option value="Banner Design">Banner Design</option>
-        </select>
-      </div>
-
       {/* Customer Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {filteredCustomers.length > 0 ? (
           filteredCustomers.map((customer) => (
-            <div
-              className="bg-white shadow rounded p-4 border border-gray-200"
-              key={customer._id}
-            >
-              <h5 className="text-lg font-bold text-blue-600">{customer.name}</h5>
-              <p className="text-sm">
-                <strong>Email:</strong> {customer.email}
+            <div key={customer._id} className="bg-white text-black shadow rounded p-4">
+              <h5 className="text-blue-600 text-lg font-bold mb-2">{customer.name}</h5>
+              <p className="mb-1">
+                <span className="font-medium">Email:</span> {customer.email}
               </p>
-              <p className="text-sm">
-                <strong>Contact:</strong> {customer.contact}
+              <p className="mb-1">
+                <span className="font-medium">Contact:</span> {customer.contact}
               </p>
-              <p className="text-sm">
-                <strong>Service:</strong> {customer.service}
+              <p className="mb-1">
+                <span className="font-medium">Service:</span> {customer.service}
               </p>
-              <p className="text-sm">
-                <strong>Date & Time:</strong>{" "}
+              <p className="mb-3">
+                <span className="font-medium">Date & Time:</span>{" "}
                 {new Date(customer.datetime).toLocaleDateString("en-GB")}{" "}
                 {new Date(customer.datetime).toLocaleTimeString("en-US", {
                   hour: "2-digit",
@@ -303,15 +300,15 @@ const CustomerForm = () => {
                 })}
               </p>
               <button
-                className="bg-red-500 text-white px-3 py-1 rounded mt-2 hover:bg-red-600"
-                onClick={() => deleteCustomer(customer._id)}
+                className="bg-red-600 text-white px-3 py-1 rounded inline-flex items-center gap-1 hover:bg-red-700"
+                onClick={() => console.log("Delete", customer._id)}
               >
                 <FaTrash /> Delete
               </button>
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center">
+          <div className="text-center col-span-full">
             <p className="text-gray-500">No customers found.</p>
           </div>
         )}
