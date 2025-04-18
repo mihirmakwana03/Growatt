@@ -4,7 +4,7 @@ const TeamMembers = () => {
     const [teamMembers, setTeamMembers] = useState([]);
     const [filteredMembers, setFilteredMembers] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({ name: "", designation: "", image: null });
+    const [formData, setFormData] = useState({ name: "", designation: "", bio: "", social: "", image: null });
     const [filter, setFilter] = useState("");
 
     // Fetch team members
@@ -33,6 +33,8 @@ const TeamMembers = () => {
         const formDataObj = new FormData();
         formDataObj.append("name", formData.name);
         formDataObj.append("designation", formData.designation);
+        formDataObj.append("bio", formData.bio);
+        formDataObj.append("social", formData.social);
         formDataObj.append("image", formData.image);
 
         const response = await fetch("http://localhost:5000/team/add", {
@@ -43,7 +45,7 @@ const TeamMembers = () => {
         if (response.ok) {
             alert("Team member added!");
             setShowModal(false);
-            setFormData({ name: "", designation: "", image: null });
+            setFormData({ name: "", designation: "",bio: "", social: "", image: null });
 
             // Refresh team members list
             fetch("http://localhost:5000/team")
@@ -119,6 +121,8 @@ const TeamMembers = () => {
                             crossOrigin="anonymous"
                         />
                         <h5 className="mt-4 font-bold text-lg text-black">{member.name}</h5>
+                        <h5 className="mt-4 font-bold text-lg text-black">{member.bio}</h5>
+                        <h5 className="mt-4 font-bold text-lg text-black">@{member.social}</h5>
                         <p className="text-gray-500">{member.designation}</p>
                         <button
                             className="mt-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
@@ -163,6 +167,28 @@ const TeamMembers = () => {
                                         className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
                                         name="designation"
                                         value={formData.designation}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Bio</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                                        name="bio"
+                                        value={formData.bio}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium mb-1">Social Media</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded px-3 py-2 bg-white"
+                                        name="social"
+                                        value={formData.social}
                                         onChange={handleChange}
                                         required
                                     />

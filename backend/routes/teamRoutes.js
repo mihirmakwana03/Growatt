@@ -21,10 +21,12 @@ const upload = multer({ storage });
 // Add a new team member
 router.post("/add", upload.single("image"), async (req, res) => {
     try {
-        const { name, designation } = req.body;
+        const { name, designation, bio, social } = req.body;
         const newMember = new TeamMember({
             name,
             designation,
+            bio,
+            social,
             image: req.file.filename,
         });
 

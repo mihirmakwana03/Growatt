@@ -1,16 +1,48 @@
 const express = require("express");
 const router = express.Router();
-const Testimonial = require("../models/Testimonial");
 
-// ✅ Add a testimonial
-router.post("/", async (req, res) => {
+const Testimonial = require("../models/Testimonial"); // ✅ This model is used correctly now
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// ✅ Ensure 'uploads' directory exists
+const uploadDir = path.join(__dirname, "../uploadsimgtestimonial");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// ✅ Multer Storage Setup
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + file.originalname);
+    },
+});
+
+const upload = multer({ storage });
+
+// ✅ Create Testimonial
+router.post("/", upload.single("image"), async (req, res) => {
     try {
-        const { name, message, rating } = req.body;
-        const newTestimonial = new Testimonial({ name, message, rating });
-        await newTestimonial.save();
-        res.status(201).json({ success: true, testimonial: newTestimonial });
+        if (!req.file) {
+            return res.status(400).json({ error: "Image is required" });
+        }
+
+        const newData = new Testimonial({ // ✅ Corrected model name
+            name: req.body.name,
+            message: req.body.message,
+            imageUrl: `/uploadsimgtestimonial/${req.file.filename}`,
+            rating: req.body.rating,
+        });
+
+        await newData.save();
+        res.status(201).json(newData);
     } catch (error) {
-        res.status(500).json({ error: "Failed to add testimonial" });
+        console.error("❌ Upload Error:", error);
+        res.status(500).json({ error: "Failed to upload" });
     }
 });
 
@@ -24,8 +56,11 @@ router.get("/", async (req, res) => {
     }
 });
 
-// ✅ Delete multiple testimonials
-router.delete("/", async (req, res) => {  // ✅ Changed from app.delete to router.delete
+
+// ✅ Delete multiple testimonials with image deletion
+// ✅ Delete multiple testimonials with image deletion
+router.delete("/", async (req, res) => {
+
     try {
         const { ids } = req.body;
 
@@ -33,6 +68,29 @@ router.delete("/", async (req, res) => {  // ✅ Changed from app.delete to rout
             return res.status(400).json({ error: "No valid IDs provided for deletion." });
         }
 
+
+        // Fetch testimonials to get their image paths
+        const items = await Testimonial.find({ _id: { $in: ids } });
+
+        for (const item of items) {
+            if (item.imageUrl) {
+                const filePath = path.join(__dirname, "..", item.imageUrl);
+
+                // Log file path to ensure correctness
+                console.log("File path to delete:", filePath);
+
+                // Delete the file from the server
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error("Error deleting file:", err);
+                    } else {
+                        console.log("File deleted successfully:", filePath);
+                    }
+                });
+            }
+        }
+
+        // Delete testimonials from the database
         await Testimonial.deleteMany({ _id: { $in: ids } });
 
         res.status(200).json({ message: "Testimonials deleted successfully." });

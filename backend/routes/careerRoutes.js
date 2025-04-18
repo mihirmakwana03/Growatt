@@ -27,9 +27,9 @@ router.get("/", async (req, res) => {
 // ✅ Create a new career (POST Route)
 router.post("/", async (req, res) => {
     try {
-        const { jobTitle, shortDescription, jobLocation, jobType, jobEndDate } = req.body;
+        const { jobTitle, shortDescription, jobResponse, jobRequire, jobLocation, jobType, jobEndDate } = req.body;
 
-        if (!jobTitle || !shortDescription || !jobLocation || !jobType || !jobEndDate) {
+        if (!jobTitle || !shortDescription || !jobRequire || !jobResponse || !jobLocation || !jobType || !jobEndDate) {
             return res.status(400).json({ message: "Missing required fields!" });
         }
 
@@ -45,6 +45,8 @@ router.post("/", async (req, res) => {
         const newCareer = new Career({
             jobTitle,
             shortDescription,
+            jobResponse,
+            jobRequire,
             jobLocation,
             jobType,
             jobEndDate: formattedEndDate,

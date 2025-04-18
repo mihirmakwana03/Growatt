@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { FaUserPlus, FaTrash } from "react-icons/fa";
+import { FaTrash, FaDownload, FaRedo, FaPlus } from "react-icons/fa";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = "http://localhost:5000/customers";
 
 const CustomerForm = () => {
-  const [formData, setFormData] = useState({
+  const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedService, setSelectedService] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  // New Customer State
+  const [newCustomer, setNewCustomer] = useState({
     name: "",
     email: "",
     contact: "",
@@ -13,13 +24,7 @@ const CustomerForm = () => {
     datetime: "",
   });
 
-  const [customers, setCustomers] = useState([]);
-  const [filteredCustomers, setFilteredCustomers] = useState([]);
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedService, setSelectedService] = useState("");
 
   useEffect(() => {
     fetchCustomers();
@@ -27,14 +32,34 @@ const CustomerForm = () => {
 
   useEffect(() => {
     filterCustomers();
-  }, [searchTerm, selectedService, customers]);
+  }, [searchTerm, selectedService, startDate, endDate, customers]);
 
+  // Handle New Customer Input
+  const handleNewCustomerChange = (e) => {
+    setNewCustomer({ ...newCustomer, [e.target.name]: e.target.value });
+  };
+
+  // Add New Customer
+  const handleAddCustomer = async () => {
+    try {
+      const response = await axios.post(API_URL, newCustomer);
+      setCustomers([...customers, response.data]);
+      setFilteredCustomers([...customers, response.data]);
+      setShowModal(false);
+      setNewCustomer({ name: "", email: "", contact: "", service: "", datetime: "" });
+
+      // Refresh the page after submission
+      window.location.reload();
+    } catch (error) {
+      console.error("❌ Error adding customer:", error);
+    }
+  };
+
+  // Fetch customer data
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(API_URL);
-      const data = Array.isArray(response.data)
-        ? response.data
-        : response.data.customers || [];
+      const data = Array.isArray(response.data) ? response.data : [];
       setCustomers(data);
       setFilteredCustomers(data);
     } catch (error) {
@@ -42,15 +67,7 @@ const CustomerForm = () => {
     }
   };
 
-  const deleteCustomer = async (id) => {
-    try {
-      await axios.delete(`${API_URL}/${id}`);
-      setCustomers(customers.filter((customer) => customer._id !== id));
-    } catch (error) {
-      console.error("❌ Error deleting customer:", error.response?.data || error);
-    }
-  };
-
+  // Filter customers based on search input, service, and date range
   const filterCustomers = () => {
     let filtered = customers;
     if (searchTerm) {
@@ -61,59 +78,39 @@ const CustomerForm = () => {
     if (selectedService) {
       filtered = filtered.filter((customer) => customer.service === selectedService);
     }
+    if (startDate && endDate) {
+      filtered = filtered.filter((customer) => {
+        const customerDate = new Date(customer.datetime);
+        return customerDate >= new Date(startDate) && customerDate <= new Date(endDate);
+      });
+    }
     setFilteredCustomers(filtered);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+  // Reset filters
+  const handleResetFilters = () => {
+    setSearchTerm("");
+    setSelectedService("");
+    setStartDate("");
+    setEndDate("");
+    setFilteredCustomers(customers);
   };
 
-  const handleServiceFilterChange = (e) => {
-    setSelectedService(e.target.value);
-  };
+  // Download Excel file
+  const handleDownloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredCustomers);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      try {
-        const response = await axios.post(API_URL, formData, {
-          headers: { "Content-Type": "application/json" },
-        });
-        setSuccessMessage(response.data.message);
-        handleReset();
-        setShowModal(false);
-        fetchCustomers();
-      } catch (error) {
-        console.error("❌ Error submitting form:", error);
-      }
-    }
-  };
-
-  const validateForm = () => {
-    let errors = {};
-    if (!formData.name.trim()) errors.name = "Customer name is required!";
-    if (!formData.email.match(/^\S+@\S+\.\S+$/)) errors.email = "Invalid email format!";
-    if (!formData.contact.match(/^\d{10}$/)) errors.contact = "Contact number must be 10 digits!";
-    if (!formData.service) errors.service = "Please select a service!";
-    if (!formData.datetime) errors.datetime = "Please select date & time!";
-    setErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleReset = () => {
-    setFormData({
-      name: "",
-      email: "",
-      contact: "",
-      service: "",
-      datetime: "",
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
     });
-    setErrors({});
-    setSuccessMessage("");
-  };
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    saveAs(data, "Filtered_Customers_Data.xlsx");
   };
 
   return (
@@ -281,22 +278,19 @@ const CustomerForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
         {filteredCustomers.length > 0 ? (
           filteredCustomers.map((customer) => (
-            <div
-              className="bg-white shadow rounded p-4 border border-gray-200"
-              key={customer._id}
-            >
-              <h5 className="text-lg font-bold text-blue-600">{customer.name}</h5>
-              <p className="text-sm">
-                <strong>Email:</strong> {customer.email}
+            <div key={customer._id} className="bg-white text-black shadow rounded p-4">
+              <h5 className="text-blue-600 text-lg font-bold mb-2">{customer.name}</h5>
+              <p className="mb-1">
+                <span className="font-medium">Email:</span> {customer.email}
               </p>
-              <p className="text-sm">
-                <strong>Contact:</strong> {customer.contact}
+              <p className="mb-1">
+                <span className="font-medium">Contact:</span> {customer.contact}
               </p>
-              <p className="text-sm">
-                <strong>Service:</strong> {customer.service}
+              <p className="mb-1">
+                <span className="font-medium">Service:</span> {customer.service}
               </p>
-              <p className="text-sm">
-                <strong>Date & Time:</strong>{" "}
+              <p className="mb-3">
+                <span className="font-medium">Date & Time:</span>{" "}
                 {new Date(customer.datetime).toLocaleDateString("en-GB")}{" "}
                 {new Date(customer.datetime).toLocaleTimeString("en-US", {
                   hour: "2-digit",
@@ -305,15 +299,15 @@ const CustomerForm = () => {
                 })}
               </p>
               <button
-                className="bg-red-500 text-white px-3 py-1 rounded mt-2 hover:bg-red-600"
-                onClick={() => deleteCustomer(customer._id)}
+                className="bg-red-600 text-white px-3 py-1 rounded inline-flex items-center gap-1 hover:bg-red-700"
+                onClick={() => console.log("Delete", customer._id)}
               >
                 <FaTrash /> Delete
               </button>
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center">
+          <div className="text-center col-span-full">
             <p className="text-gray-500">No customers found.</p>
           </div>
         )}

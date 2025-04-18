@@ -22,6 +22,8 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const API_KEY = "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";
+
 // ✅ Validate Required Environment Variables
 if (!process.env.MONGO_URI || !process.env.SESSION_SECRET) {
     console.error("❌ ERROR: Missing required environment variables! Check .env file.");
@@ -29,7 +31,8 @@ if (!process.env.MONGO_URI || !process.env.SESSION_SECRET) {
 }
 
 // ✅ MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose
+    .connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
@@ -85,11 +88,16 @@ app.use("/portfolio", portfolioRoutes);
 app.use("/uploadspdf", express.static(path.join(__dirname, "uploadspdf")));
 app.use("/email", emailRoutes);  // ✅ Mount email routes
 app.use("/contact", contactRoutes);  // ✅ Mount contact routes
+app.use('/contactuploadsimg', express.static(path.join(__dirname, 'public', 'contactuploadsimg')));
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
 app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);
+app.use("/uploadsimgtestimonial", express.static(path.join(__dirname, "uploadsimgtestimonial")));
 app.use('/membersImg', express.static(path.join(__dirname, 'public', 'membersImg')));
 app.use("/team", teamRoutes);
+app.use('/teamstories', teamStoriesRoutes);
+app.use('/storyImg', express.static(path.join(__dirname, 'public', 'storyImg')));
+app.use('/pricing', pricingRoutes);
 
 
 // ✅ Global Error Handling

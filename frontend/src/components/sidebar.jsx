@@ -8,7 +8,8 @@ import { TfiBriefcase } from "react-icons/tfi";
 import { MdEmail, MdOutlineReviews, MdAdminPanelSettings } from "react-icons/md";
 import { SiGooglebigquery } from "react-icons/si";
 import { BsPersonPlusFill } from "react-icons/bs";
-import { useSelector } from "react-redux";
+import { MdOutlineReviews } from "react-icons/md";
+import { RiTeamFill } from "react-icons/ri";
 
 const Sidebar = () => {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
@@ -65,6 +66,21 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
+            to="/admin/pricing"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
+            }
+          >
+            <MdOutlinePriceChange className="mr-2" />
+            <span>Service Pricing</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
             to="/admin/career"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md font-medium ${
@@ -76,6 +92,21 @@ const Sidebar = () => {
           >
             <GiAstronautHelmet className="mr-2" />
             <span>Career</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/admin/teamstories"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md font-medium ${
+                isActive
+                  ? "bg-blue-600 text-white dark:bg-blue-500"
+                  : "text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              }`
+            }
+          >
+            <AiOutlineTeam className="mr-2" />
+            <span>Team Stories</span>
           </NavLink>
         </li>
         <li>
@@ -93,6 +124,7 @@ const Sidebar = () => {
             <span>Team Members</span>
           </NavLink>
         </li>
+        
         <li>
           <NavLink
             to="/admin/inquiry"

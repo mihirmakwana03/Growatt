@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Create Portfolio Item
-// ✅ Create Portfolio Item
 router.post("/", upload.single("image"), async (req, res) => {
     try {
         if (!req.file) {

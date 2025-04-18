@@ -93,7 +93,24 @@ function AdInquiry() {
                             <strong>Phone:</strong> +{contact.phone}
                         </p>
                         <p className="text-sm">
+                            <strong>Subject:</strong> {contact.subject}
+                        </p>
+                        <p className="text-sm">
                             <strong>Message:</strong> {contact.message}
+                        </p>
+                        <p className="text-sm">
+                          <strong>File:</strong> {contact.files ? (
+                            <a
+                                href={`http://localhost:5000/contactuploadsimg/${contact.files}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 hover:underline font-bold"
+                            >
+                                View File
+                            </a>
+                          ) : (
+                            "No files attached"
+                          )}
                         </p>
 
                         <div className="flex justify-between mt-4">

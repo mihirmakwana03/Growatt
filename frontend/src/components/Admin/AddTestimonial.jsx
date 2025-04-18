@@ -3,68 +3,84 @@ import { FaStar } from "react-icons/fa";
 import axios from "axios";
 
 const AddTestimonial = () => {
-    const [name, setName] = useState("");
-    const [message, setMessage] = useState("");
-    const [rating, setRating] = useState(0);
-    const [hover, setHover] = useState(null);
-    const [testimonials, setTestimonials] = useState([]);
-    const [selectedIds, setSelectedIds] = useState([]);
-    const [filterRating, setFilterRating] = useState(0);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(null);
+  const [imageUrl, setImage] = useState(null);
+  const [testimonials, setTestimonials] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [filterRating, setFilterRating] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        fetchTestimonials();
-    }, []);
+  useEffect(() => {
+    fetchTestimonials();
+  }, []);
 
-    const fetchTestimonials = async () => {
-        try {
-            const res = await axios.get("http://localhost:5000/testimonials");
-            setTestimonials(res.data);
-        } catch (error) {
-            console.error("❌ Error fetching testimonials:", error);
-        }
-    };
+  const fetchTestimonials = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/testimonials");
+      setTestimonials(res.data);
+    } catch (error) {
+      console.error("❌ Error fetching testimonials:", error);
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post("http://localhost:5000/testimonials", { name, message, rating });
-            setName("");
-            setMessage("");
-            setRating(0);
-            setIsModalOpen(false);
-            fetchTestimonials();
-        } catch (error) {
-            console.error("❌ Error submitting testimonial:", error);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleDelete = async () => {
-        if (selectedIds.length === 0) {
-            alert("No testimonials selected for deletion.");
-            return;
-        }
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("message", message);
+      formData.append("rating", rating);
+      formData.append("image", imageUrl); // the image file goes here
 
-        try {
-            await axios.delete("http://localhost:5000/testimonials", {
-                headers: { "Content-Type": "application/json" },
-                data: { ids: selectedIds },
-            });
+      await axios.post("http://localhost:5000/testimonials", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-            setSelectedIds([]);
-            fetchTestimonials();
-        } catch (error) {
-            console.error("❌ Error deleting testimonials:", error);
-        }
-    };
+      // Clear form after submission
+      setName("");
+      setMessage("");
+      setRating(0);
+      setImage(null);
+      setIsModalOpen(false);
+      fetchTestimonials();
+    } catch (error) {
+      console.error("❌ Error submitting testimonial:", error);
+    }
+  };
 
-    const toggleSelect = (id) => {
-        setSelectedIds((prevSelectedIds) =>
-            prevSelectedIds.includes(id)
-                ? prevSelectedIds.filter((selectedId) => selectedId !== id)
-                : [...prevSelectedIds, id]
-        );
-    };
+  const handleDelete = async () => {
+    if (selectedIds.length === 0) {
+      alert("No testimonials selected for deletion.");
+      return;
+    }
+
+    try {
+      await axios.delete("http://localhost:5000/testimonials", {
+        headers: { "Content-Type": "application/json" },
+        data: { ids: selectedIds },
+      });
+
+      setSelectedIds([]);
+      fetchTestimonials();
+    } catch (error) {
+      console.error("❌ Error deleting testimonials:", error);
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prevSelectedIds) =>
+      prevSelectedIds.includes(id)
+        ? prevSelectedIds.filter((selectedId) => selectedId !== id)
+        : [...prevSelectedIds, id]
+    );
+  };
 
     return (
         <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-50">

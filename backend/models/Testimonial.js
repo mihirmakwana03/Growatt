@@ -5,6 +5,7 @@ const TestimonialSchema = new mongoose.Schema({
     message: { type: String, required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
     createdAt: { type: Date, default: Date.now },
+    imageUrl: { type: String, required: true },
 });
 
 module.exports = mongoose.model("Testimonial", TestimonialSchema);

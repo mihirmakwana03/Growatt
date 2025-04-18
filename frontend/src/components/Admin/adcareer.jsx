@@ -12,6 +12,8 @@ const CareerSection = () => {
   const [formState, setFormState] = useState({
     jobTitle: "",
     shortDescription: "",
+    jobResponse: "",
+    jobRequire: "",
     jobLocation: "",
     jobType: "full-time",
     jobEndDate: "",
@@ -30,10 +32,14 @@ const CareerSection = () => {
       const currentDate = new Date().toISOString().split("T")[0];
 
       // ✅ Remove expired jobs from the backend
-      await axios.delete(`${API_URL}/delete-expired`, { data: { currentDate } });
+      await axios.delete(`${API_URL}/delete-expired`, {
+        data: { currentDate },
+      });
 
       // ✅ Filter active careers
-      const activeCareers = response.data.filter((career) => career.jobEndDate >= currentDate);
+      const activeCareers = response.data.filter(
+        (career) => career.jobEndDate >= currentDate
+      );
 
       setCareers(activeCareers);
       setLoading(false);
@@ -58,6 +64,8 @@ const CareerSection = () => {
       setFormState({
         jobTitle: "",
         shortDescription: "",
+        jobRequire: "",
+        jobResponse: "",
         jobLocation: "",
         jobType: "full-time",
         jobEndDate: "",
@@ -69,7 +77,8 @@ const CareerSection = () => {
 
   // ✅ Delete a specific career
   const handleDeleteCareer = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this career listing?")) return;
+    if (!window.confirm("Are you sure you want to delete this career listing?"))
+      return;
 
     try {
       await axios.delete(`${API_URL}/${id}`);
@@ -85,7 +94,9 @@ const CareerSection = () => {
       <h1 className="text-center text-2xl font-bold text-blue-600 mb-4">Career Opportunity</h1>
         <hr className="my-4 border-gray-600" />
 
-      {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>}
+      {error && (
+        <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>
+      )}
 
       <div className="text-center mb-4">
         <button
@@ -96,14 +107,22 @@ const CareerSection = () => {
         </button>
       </div>
 
-      {loading && <p className="text-center text-gray-500">Loading careers...</p>}
+      {loading && (
+        <p className="text-center text-gray-500">Loading careers...</p>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {careers.length > 0 ? (
-          careers.map((career) => (
-            <div className="bg-white text-black shadow-md rounded p-4" key={career._id}>
+        {careers.length > 0
+          ? careers.map((career) => (
+            <div
+              className="bg-white text-black shadow-md rounded p-4"
+              key={career._id}
+            >
               <p className="font-semibold">
                 <strong>Job Title:</strong> {career.jobTitle}
+              </p>
+              <p>
+                <strong>Job Description:</strong> {career.shortDescription}
               </p>
               <p>
                 <strong>Location:</strong> {career.jobLocation}
@@ -123,92 +142,132 @@ const CareerSection = () => {
               </button>
             </div>
           ))
-        ) : (
-          !loading && <p className="text-center text-gray-500">No Career Listings Available</p>
-        )}
+          : !loading && (
+            <p className="text-center text-gray-500">
+              No Career Listings Available
+            </p>
+          )}
       </div>
 
       {/* Career Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center text-black">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Add Career</h3>
+          <div className="bg-white rounded-lg p-6 w-full max-w-4xl">
+            <h3 className="text-xl font-bold mb-4 text-center">Add Career</h3>
             <form onSubmit={handleInsertCareer}>
-              <div className="mb-4">
-                <label className="block font-semibold mb-1">Job Title</label>
-                <input
-                  type="text"
-                  className="w-full border rounded p-2 bg-white"
-                  name="jobTitle"
-                  value={formState.jobTitle}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Left Side */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <label className="block font-semibold mb-1">Job Title</label>
+                    <input
+                      type="text"
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="jobTitle"
+                      value={formState.jobTitle}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-1">Responsibilities</label>
+                    <textarea
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="jobResponse"
+                      rows="4"
+                      placeholder="• List key responsibilities..."
+                      value={formState.jobResponse}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-1">Location</label>
+                    <input
+                      type="text"
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="jobLocation"
+                      value={formState.jobLocation}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-1">Job End Date</label>
+                    <input
+                      type="date"
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="jobEndDate"
+                      value={formState.jobEndDate}
+                      onChange={handleChange}
+                      min={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+                </div>
+
+                {/* Right Side */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <label className="block font-semibold mb-1">Job Description</label>
+                    <textarea
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="shortDescription"
+                      rows="4"
+                      placeholder="• Write a brief overview..."
+                      value={formState.shortDescription}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-1">Requirements</label>
+                    <textarea
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="jobRequire"
+                      rows="4"
+                      placeholder="• List requirements..."
+                      value={formState.jobRequire}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold mb-1">Job Type</label>
+                    <select
+                      className="w-full border rounded p-2 text-sm bg-white"
+                      name="jobType"
+                      value={formState.jobType}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="full-time">Full-Time</option>
+                      <option value="part-time">Part-Time</option>
+                      <option value="contract">Contract</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block font-semibold mb-1">Short Description</label>
-                <input
-                  type="text"
-                  className="w-full border rounded p-2 bg-white"
-                  name="shortDescription"
-                  value={formState.shortDescription}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block font-semibold mb-1">Location</label>
-                <input
-                  type="text"
-                  className="w-full border rounded p-2 bg-white"
-                  name="jobLocation"
-                  value={formState.jobLocation}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block font-semibold mb-1">Job Type</label>
-                <select
-                  className="w-full border rounded p-2 bg-white"
-                  name="jobType"
-                  value={formState.jobType}
-                  onChange={handleChange}
-                  required
+              <div className="mt-6 flex flex-col md:flex-row gap-4">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded w-full md:w-1/2 hover:bg-green-700"
                 >
-                  <option value="full-time">Full-Time</option>
-                  <option value="part-time">Part-Time</option>
-                  <option value="contract">Contract</option>
-                </select>
+                  Add Career
+                </button>
+                <button
+                  className="bg-gray-400 text-white px-4 py-2 rounded w-full md:w-1/2 hover:bg-gray-500"
+                  onClick={() => setShowForm(false)}
+                >
+                  Cancel
+                </button>
               </div>
-
-              <div className="mb-4">
-                <label className="block font-semibold mb-1">Job End Date</label>
-                <input
-                  type="date"
-                  className="w-full border rounded p-2 bg-white"
-                  name="jobEndDate"
-                  value={formState.jobEndDate}
-                  onChange={handleChange}
-                  min={new Date().toISOString().split("T")[0]} // Prevents past dates
-                />
-              </div>
-              <button
-                type="submit"
-                className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700"
-              >
-                Add Career
-              </button>
             </form>
-            <button
-              className="bg-gray-400 text-white px-4 py-2 rounded-md shadow hover:bg-gray-500 p-2 mt-4 w-full"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
