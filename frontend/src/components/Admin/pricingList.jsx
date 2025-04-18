@@ -126,10 +126,10 @@ const PricingListForm = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-12 bg-black text-white">
-      <h2 className="text-center text-4xl font-bold text-blue-500 mb-8">
-        Our Service Pricing Plans
-      </h2>
+    <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+      <h1 className="text-center text-2xl font-bold text-blue-600">Services</h1>
+      <hr className="my-4 border-gray-600" />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {pricingDetails.length === 0 ? (
           <div className="text-center text-lg text-white">

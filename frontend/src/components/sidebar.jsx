@@ -5,19 +5,13 @@ import "./sidebar.css";
 import { RiDashboardHorizontalFill, RiTeamFill } from "react-icons/ri";
 import { GiAstronautHelmet } from "react-icons/gi";
 import { TfiBriefcase } from "react-icons/tfi";
-import { MdEmail, MdOutlineReviews, MdAdminPanelSettings } from "react-icons/md";
+import { MdEmail, MdOutlineReviews, MdAdminPanelSettings, MdOutlinePriceChange } from "react-icons/md";
 import { SiGooglebigquery } from "react-icons/si";
 import { BsPersonPlusFill } from "react-icons/bs";
-import { MdOutlineReviews } from "react-icons/md";
-import { RiTeamFill } from "react-icons/ri";
+import { AiOutlineTeam } from "react-icons/ai";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
-  const [showProfileOptions, setShowProfileOptions] = useState(false);
-
-  const toggleProfileOptions = () => {
-    setShowProfileOptions(!showProfileOptions);
-  };
-
   const { currentUser } = useSelector((state) => state.user);
   if (!currentUser) {
     return <div>Loading...</div>;
@@ -33,7 +27,7 @@ const Sidebar = () => {
       <hr className="border-gray-300 dark:border-gray-700 mb-4" />
 
       {/* Navigation Links */}
-      <ul className="flex flex-col space-y-2 flex-1">
+      <ul className="flex flex-col space-y-2 flex-1 overflow-y-auto min-h-0">
         <li>
           <NavLink
             to="/admin/dashboard"
@@ -124,7 +118,6 @@ const Sidebar = () => {
             <span>Team Members</span>
           </NavLink>
         </li>
-        
         <li>
           <NavLink
             to="/admin/inquiry"
@@ -203,7 +196,7 @@ const Sidebar = () => {
       </ul>
 
       {/* User Profile Section */}
-      <div className="mt-6 pt-4 border-t border-gray-300 dark:border-gray-700">
+      <div className="shrink-0 mt-6 pt-4 border-t border-gray-300 dark:border-gray-700">
         <div className="flex items-center space-x-3 px-2 py-2">
           <img
             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"

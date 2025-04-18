@@ -16,7 +16,6 @@ import Login from './components/Admin/login';
 import ResetPassword from './components/Admin/ResetPassword';
 import Admin from './Admin';
 import TermsAndConditions from './components/TermsConditions';
-import AdminCarrer from './components/Admin/adcareer';
 import PricingComponent from './components/pricing';
 import PrivateRoute from './PrivateRoute';
 import Logout from './components/Admin/logout';
@@ -53,7 +52,6 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/admin/carrer" element={<AdminCarrer />} />
           <Route path="/termsconditions" element={<TermsAndConditions />} />
           <Route path="/pricingcomponent" element={<PricingComponent />} />
         </Routes>

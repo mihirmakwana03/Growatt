@@ -17,6 +17,8 @@ const teamRoutes = require("./routes/teamRoutes");
 const admin = require("./routes/adminRoutes.js");
 const authRoutes = require("./routes/auth.route.js");
 const cookieParser = require("cookie-parser");
+const teamStoriesRoutes = require("./routes/TeamStories.js");
+const pricingRoutes = require("./routes/pricingRoutes.js");
 
 
 const app = express();

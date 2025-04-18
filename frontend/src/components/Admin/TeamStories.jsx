@@ -71,11 +71,13 @@ const TeamStories = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h2 className="text-center text-blue-600 text-2xl font-bold mb-6">Our Team</h2>
+        <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
+        <h1 className="text-center text-2xl font-bold text-blue-600">Team Stories</h1>
+        <hr className="my-4 border-gray-600" />
+
             <div className="flex flex-col md:flex-row justify-between items-center mb-6">
                 <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onClick={() => setShowModal(true)}>+ Add Story</button>
-                <select className="mt-4 md:mt-0 border border-gray-300 rounded px-3 py-2" value={filter} onChange={handleFilterChange}>
+                <select className="mt-4 md:mt-0 border border-gray-300 rounded px-3 py-2 bg-white text-black" value={filter} onChange={handleFilterChange}>
                     <option value="">All Designations</option>
                     {Array.from(new Set(teamMembers.map((m) => m.designation))).map((d, i) => (
                         <option key={i} value={d}>{d}</option>

@@ -114,153 +114,30 @@ const CustomerForm = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 pt-5 min-h-screen bg-gray-300">
-            <h1 className="text-center text-2xl font-bold text-blue-600">Customer Form</h1>
-            <hr className="my-4 border-gray-600" />
-      {/* Floating Button */}
-      <button
-        className="fixed bottom-5 right-5 bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600"
-        onClick={() => setShowModal(true)}
-      >
-        <FaUserPlus />
-      </button>
+    <div className="container mx-auto p-4 bg-gray-300 min-h-screen">
+      <h2 className="text-center text-2xl font-bold text-blue-600 mb-6">Customers List</h2>
+      <hr className="my-4 border-gray-600" />
 
-      {/* Modal for Customer Form */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="text-xl font-bold text-blue-600">Add Customer</h4>
-              <button
-                className="text-gray-500 hover:text-gray-700"
-                onClick={() => setShowModal(false)}
-              >
-                ✖
-              </button>
-            </div>
-            {successMessage && (
-              <div className="bg-green-100 text-green-700 p-2 rounded mb-4">
-                {successMessage}
-              </div>
-            )}
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-medium mb-1">Customer Name</label>
-                  <input
-                    type="text"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.name && (
-                    <small className="text-red-500">{errors.name}</small>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Email ID</label>
-                  <input
-                    type="email"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.email && (
-                    <small className="text-red-500">{errors.email}</small>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Contact No</label>
-                  <input
-                    type="tel"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="contact"
-                    value={formData.contact}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.contact && (
-                    <small className="text-red-500">{errors.contact}</small>
-                  )}
-                </div>
-                <div>
-                  <label className="block font-medium mb-1">Select Service</label>
-                  <select
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="service"
-                    value={formData.service}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Choose a service</option>
-                    <option value="Logo Design">Logo Design</option>
-                    <option value="Brand Identity">Brand Identity</option>
-                    <option value="Packaging Design">Packaging Design</option>
-                    <option value="Business Card Design">Business Card Design</option>
-                    <option value="Letterheads">Letterheads</option>
-                    <option value="Label Design">Label Design</option>
-                    <option value="Flex Design">Flex Design</option>
-                    <option value="Catalog Design">Catalog Design</option>
-                    <option value="Brochure Design">Brochure Design</option>
-                    <option value="Banner Design">Banner Design</option>
-                  </select>
-                  {errors.service && (
-                    <small className="text-red-500">{errors.service}</small>
-                  )}
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block font-medium mb-1">Select Date & Time</label>
-                  <input
-                    type="datetime-local"
-                    className="w-full border border-gray-300 rounded p-2 bg-white"
-                    name="datetime"
-                    value={formData.datetime}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.datetime && (
-                    <small className="text-red-500">{errors.datetime}</small>
-                  )}
-                </div>
-              </div>
-              <div className="flex justify-end mt-4">
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
-                >
-                  ✅ Add Details
-                </button>
-                <button
-                  type="button"
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Search and Filter Section */}
-        <div className="flex flex-col md:flex-row gap-4 mt-6 bg-gray-200 p-4 rounded shadow">
+      {/* Filter Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">Search by Name</label>
           <input
             type="text"
-            className="w-full md:w-1/2 border border-gray-400 rounded p-2 bg-white text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Search by name..."
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            placeholder="Enter customer name..."
             value={searchTerm}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
+        </div>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">Filter by Service</label>
           <select
-            className="w-full md:w-1/3 border border-gray-400 rounded p-2 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            onChange={handleServiceFilterChange}
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
           >
-            <option value="">All Service</option>
+            <option value="">All Services</option>
             <option value="Logo Design">Logo Design</option>
             <option value="Brand Identity">Brand Identity</option>
             <option value="Packaging Design">Packaging Design</option>
@@ -273,9 +150,133 @@ const CustomerForm = () => {
             <option value="Banner Design">Banner Design</option>
           </select>
         </div>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">Start Date</label>
+          <input
+            type="date"
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="mb-1 font-medium text-gray-700">End Date</label>
+          <input
+            type="date"
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+      </div>
 
-        {/* Customer Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+      {/* Buttons Row */}
+      <div className="flex justify-center gap-4 mb-6">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
+          onClick={() => setShowModal(true)}
+        >
+          <FaPlus /> Add Customer
+        </button>
+        <button
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700"
+          onClick={handleDownloadExcel}
+        >
+          <FaDownload /> Download
+        </button>
+        <button
+          className="bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-700"
+          onClick={handleResetFilters}
+        >
+          <FaRedo /> Reset
+        </button>
+      </div>
+
+      {/* Add Customer Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-md w-full max-w-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h5 className="text-xl font-bold">Add New Customer</h5>
+              <button
+                type="button"
+                className="text-gray-600 hover:text-gray-800"
+                onClick={() => setShowModal(false)}
+              >
+                &#x2715;
+              </button>
+            </div>
+            <div className="space-y-3">
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                name="name"
+                placeholder="Name"
+                value={newCustomer.name}
+                onChange={handleNewCustomerChange}
+              />
+              <input
+                type="email"
+                className="w-full border rounded p-2"
+                name="email"
+                placeholder="Email"
+                value={newCustomer.email}
+                onChange={handleNewCustomerChange}
+              />
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                name="contact"
+                placeholder="Contact"
+                value={newCustomer.contact}
+                onChange={handleNewCustomerChange}
+              />
+              <select
+                className="w-full border rounded p-2"
+                name="service"
+                value={newCustomer.service}
+                onChange={handleNewCustomerChange}
+              >
+                <option value="">Select Service</option>
+                <option value="Logo Design">Logo Design</option>
+                <option value="Brand Identity">Brand Identity</option>
+                <option value="Packaging Design">Packaging Design</option>
+                <option value="Business Card Design">Business Card Design</option>
+                <option value="Letterheads">Letterheads</option>
+                <option value="Label Design">Label Design</option>
+                <option value="Flex Design">Flex Design</option>
+                <option value="Catalog Design">Catalog Design</option>
+                <option value="Brochure Design">Brochure Design</option>
+                <option value="Banner Design">Banner Design</option>
+              </select>
+              <input
+                type="datetime-local"
+                className="w-full border rounded p-2"
+                name="datetime"
+                value={newCustomer.datetime}
+                onChange={handleNewCustomerChange}
+              />
+            </div>
+            <div className="flex justify-end mt-6 gap-4">
+              <button
+                className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                onClick={handleAddCustomer}
+              >
+                Add Customer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Customer Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {filteredCustomers.length > 0 ? (
           filteredCustomers.map((customer) => (
             <div key={customer._id} className="bg-white text-black shadow rounded p-4">
