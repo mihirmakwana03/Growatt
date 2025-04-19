@@ -296,12 +296,10 @@ export default function Contact() {
                 </div>
                 {selectedFiles.length > 0 && (
                   <p className="mt-2 text-sm text-gray-300">
-<<<<<<< Updated upstream
                     Selected files:{" "}
                     {selectedFiles.map((file) => file.name).join(", ")}
-=======
-                    Selected files: {selectedFiles.map((file) => file.name).join(", ")}
->>>>>>> Stashed changes
+                    Selected files:{" "}
+                    {selectedFiles.map((file) => file.name).join(", ")}
                   </p>
                 )}
               </div>
