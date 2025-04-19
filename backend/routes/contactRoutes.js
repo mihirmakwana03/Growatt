@@ -122,7 +122,15 @@ router.post("/submitcontact", upload.single('files'), async (req, res) => {
 
         // Step 2: Attach file info if present
         if (req.file) {
-            formData.files = req.file.filename;  // or req.file.path, depending on your config
+            const fileExtension = path.extname(req.file.originalname); // Get the file extension
+            const fileNameWithExtension = `${req.file.filename}${fileExtension}`; // Append extension to filename
+
+            // Rename the file to include the extension
+            const oldPath = req.file.path;
+            const newPath = path.join(req.file.destination, fileNameWithExtension);
+            fs.renameSync(oldPath, newPath);
+
+            formData.files = fileNameWithExtension; // Save the file name with extension
         } else {
             formData.files = ""; // or don't assign at all
         }
@@ -145,6 +153,7 @@ router.post("/submitcontact", upload.single('files'), async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
 
 // 📌 Route to Get All Inquiries
 router.get("/inquiry", async (req, res) => {

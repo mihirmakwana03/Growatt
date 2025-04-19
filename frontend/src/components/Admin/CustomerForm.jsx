@@ -125,32 +125,32 @@ const CustomerForm = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 bg-gray-300 min-h-screen">
-      <h2 className="text-center text-2xl font-bold text-blue-600 mb-6">
+    <div className="container mx-auto p-2 sm:p-4 bg-gray-300 min-h-screen">
+      <h2 className="text-center text-xl sm:text-2xl font-bold text-blue-600 mb-4 sm:mb-6">
         Customers List
       </h2>
-      <hr className="my-4 border-gray-600" />
+      <hr className="my-2 sm:my-4 border-gray-600" />
 
       {/* Filter Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">
+          <label className="mb-1 font-medium text-gray-700 text-sm sm:text-base">
             Search by Name
           </label>
           <input
             type="text"
-            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black text-sm"
             placeholder="Enter customer name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">
+          <label className="mb-1 font-medium text-gray-700 text-sm sm:text-base">
             Filter by Service
           </label>
           <select
-            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black text-sm"
             value={selectedService}
             onChange={(e) => setSelectedService(e.target.value)}
           >
@@ -168,19 +168,19 @@ const CustomerForm = () => {
           </select>
         </div>
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">Start Date</label>
+          <label className="mb-1 font-medium text-gray-700 text-sm sm:text-base">Start Date</label>
           <input
             type="date"
-            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black text-sm"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
           />
         </div>
         <div className="flex flex-col">
-          <label className="mb-1 font-medium text-gray-700">End Date</label>
+          <label className="mb-1 font-medium text-gray-700 text-sm sm:text-base">End Date</label>
           <input
             type="date"
-            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black"
+            className="border border-gray-200 bg-gray-50 rounded p-2 focus:outline-none focus:ring-2 focus:ring-gray-300 text-black text-sm"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
@@ -188,21 +188,21 @@ const CustomerForm = () => {
       </div>
 
       {/* Buttons Row */}
-      <div className="flex justify-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
+          className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded flex items-center gap-2 justify-center hover:bg-blue-700 text-sm"
           onClick={() => setShowModal(true)}
         >
           <FaPlus /> Add Customer
         </button>
         <button
-          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700"
+          className="bg-green-600 text-white px-3 sm:px-4 py-2 rounded flex items-center gap-2 justify-center hover:bg-green-700 text-sm"
           onClick={handleDownloadExcel}
         >
           <FaDownload /> Download
         </button>
         <button
-          className="bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-gray-700"
+          className="bg-gray-600 text-white px-3 sm:px-4 py-2 rounded flex items-center gap-2 justify-center hover:bg-gray-700 text-sm"
           onClick={handleResetFilters}
         >
           <FaRedo /> Reset
@@ -211,10 +211,10 @@ const CustomerForm = () => {
 
       {/* Add Customer Modal */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-black rounded-md w-full max-w-lg p-6">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-black rounded-md w-[95vw] max-w-lg p-4 sm:p-6">
             <div className="flex justify-between items-center mb-4">
-              <h5 className="text-xl font-bold">Add New Customer</h5>
+              <h5 className="text-lg sm:text-xl font-bold">Add New Customer</h5>
               <button
                 type="button"
                 className="text-gray-600 hover:text-gray-800"
@@ -223,10 +223,10 @@ const CustomerForm = () => {
                 &#x2715;
               </button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <input
                 type="text"
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-sm"
                 name="name"
                 placeholder="Name"
                 value={newCustomer.name}
@@ -234,7 +234,7 @@ const CustomerForm = () => {
               />
               <input
                 type="email"
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-sm"
                 name="email"
                 placeholder="Email"
                 value={newCustomer.email}
@@ -242,14 +242,14 @@ const CustomerForm = () => {
               />
               <input
                 type="text"
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-sm"
                 name="contact"
                 placeholder="Contact"
                 value={newCustomer.contact}
                 onChange={handleNewCustomerChange}
               />
               <select
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-sm"
                 name="service"
                 value={newCustomer.service}
                 onChange={handleNewCustomerChange}
@@ -270,21 +270,21 @@ const CustomerForm = () => {
               </select>
               <input
                 type="datetime-local"
-                className="w-full border rounded p-2"
+                className="w-full border rounded p-2 text-sm"
                 name="datetime"
                 value={newCustomer.datetime}
                 onChange={handleNewCustomerChange}
               />
             </div>
-            <div className="flex justify-end mt-6 gap-4">
+            <div className="flex flex-col sm:flex-row justify-end mt-4 sm:mt-6 gap-2 sm:gap-4">
               <button
-                className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 text-sm"
                 onClick={() => setShowModal(false)}
               >
                 Cancel
               </button>
               <button
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
                 onClick={handleAddCustomer}
               >
                 Add Customer
@@ -295,26 +295,26 @@ const CustomerForm = () => {
       )}
 
       {/* Customer Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mt-4 sm:mt-6">
         {filteredCustomers.length > 0 ? (
           filteredCustomers.map((customer) => (
             <div
               key={customer._id}
-              className="bg-white text-black shadow rounded p-4"
+              className="bg-white text-black shadow rounded p-3 sm:p-4"
             >
-              <h5 className="text-blue-600 text-lg font-bold mb-2">
+              <h5 className="text-blue-600 text-base sm:text-lg font-bold mb-2">
                 {customer.name}
               </h5>
-              <p className="mb-1">
+              <p className="mb-1 text-sm">
                 <span className="font-medium">Email:</span> {customer.email}
               </p>
-              <p className="mb-1">
+              <p className="mb-1 text-sm">
                 <span className="font-medium">Contact:</span> {customer.contact}
               </p>
-              <p className="mb-1">
+              <p className="mb-1 text-sm">
                 <span className="font-medium">Service:</span> {customer.service}
               </p>
-              <p className="mb-3">
+              <p className="mb-3 text-sm">
                 <span className="font-medium">Date & Time:</span>{" "}
                 {new Date(customer.datetime).toLocaleDateString("en-GB")}{" "}
                 {new Date(customer.datetime).toLocaleTimeString("en-US", {
@@ -324,7 +324,7 @@ const CustomerForm = () => {
                 })}
               </p>
               <button
-                className="bg-red-600 text-white px-3 py-1 rounded inline-flex items-center gap-1 hover:bg-red-700"
+                className="bg-red-600 text-white px-3 py-1 rounded inline-flex items-center gap-1 hover:bg-red-700 text-sm"
                 onClick={() => console.log("Delete", customer._id)}
               >
                 <FaTrash /> Delete

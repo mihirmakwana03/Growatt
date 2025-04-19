@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -14,51 +14,6 @@ import {
   Instagram as InstagramIcon,
   Upload,
 } from "lucide-react";
-
-const socialLinks = [
-  {
-    icon: FacebookIcon,
-    href: "https://www.facebook.com/Growattinfo/",
-    label: "Facebook",
-  },
-  { icon: TwitterIcon, href: "#", label: "Twitter" },
-  {
-    icon: InstagramIcon,
-    href: "https://www.instagram.com/growatt_info/",
-    label: "Instagram",
-  },
-  {
-    icon: Linkedin,
-    href: "https://www.linkedin.com/company/growatt-infosystem/",
-    label: "LinkedIn",
-  },
-];
-
-const contactInfo = [
-  {
-    icon: Phone,
-    title: "Phone",
-    content: "+91 81558 08720",
-    link: "tel:+918155808720",
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    content: "growattinfosystem@gmail.com",
-    link: "mailto:growattinfosystem@gmail.com",
-  },
-  {
-    icon: MapPin,
-    title: "Address",
-    content: "831, RK Empire, 150 Feet Ring Road, Rajkot, India, 360004",
-    link: "https://maps.app.goo.gl/iVuTrZzhYArCbiVM9",
-  },
-  {
-    icon: Clock,
-    title: "Business Hours",
-    content: "Mon - Sat: 9:00 AM - 5:00 PM",
-  },
-];
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -78,6 +33,80 @@ export default function Contact() {
     threshold: 0.1,
     triggerOnce: true,
   });
+
+  const [contactInfo, setContactInfo] = useState([]);
+  const [socialLinks, setSocialLinks] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/contactinfo");
+        const data = await res.json();
+        if (data) {
+          setContactInfo([
+            {
+              icon: Phone,
+              title: "Phone",
+              content: data.phone,
+              link: `tel:${data.phone}`,
+            },
+            {
+              icon: Mail,
+              title: "Email",
+              content: data.email,
+              link: `mailto:${data.email}`,
+            },
+            {
+              icon: MapPin,
+              title: "Address",
+              content: data.address,
+              link: data.mapLink || "https://maps.app.goo.gl/iVuTrZzhYArCbiVM9",
+            },
+            {
+              icon: Clock,
+              title: "Business Hours",
+              content: data.businessHours,
+            },
+          ]);
+
+          setSocialLinks([
+            {
+              icon: FacebookIcon,
+              href: data.socialLinks?.facebook
+                ? `https://facebook.com/${data.socialLinks.facebook}`
+                : "#",
+              label: "Facebook",
+            },
+            {
+              icon: TwitterIcon,
+              href: data.socialLinks?.twitter
+                ? `https://twitter.com/${data.socialLinks.twitter}`
+                : "#",
+              label: "Twitter",
+            },
+            {
+              icon: InstagramIcon,
+              href: data.socialLinks?.instagram
+                ? `https://instagram.com/${data.socialLinks.instagram}`
+                : "#",
+              label: "Instagram",
+            },
+            {
+              icon: Linkedin,
+              href: data.socialLinks?.linkedin
+                ? `https://linkedin.com/company/${data.socialLinks.linkedin}`
+                : "#",
+              label: "LinkedIn",
+            },
+          ]);
+        }
+      } catch (err) {
+        setContactInfo([]);
+        setSocialLinks([]);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +138,7 @@ export default function Contact() {
     form.append("message", formData.message);
     form.append("captcha", recaptchaValue);
 
-    selectedFiles.forEach((file, index) => {
+    selectedFiles.forEach((file) => {
       form.append("files", file);
     });
 
@@ -138,11 +167,11 @@ export default function Contact() {
           message: "",
         });
         setSelectedFiles([]);
+        setRecaptchaValue(null);
       } else {
-        setResponseMessage("❌ Error: " + data.error);
+        setResponseMessage("❌ Error: " + (data.error || data.message));
       }
     } catch (error) {
-      console.error("❌ Submission error:", error);
       setResponseMessage("❌ Server error. Please try again.");
     } finally {
       setLoading(false);
@@ -275,7 +304,7 @@ export default function Contact() {
                       className="hidden"
                       multiple
                       onChange={(e) => {
-                        const files = Array.from(e.target.files).slice(0, 5); // Optional: limit max to 5
+                        const files = Array.from(e.target.files).slice(0, 5);
                         setSelectedFiles(files);
                       }}
                     />
@@ -352,6 +381,8 @@ export default function Contact() {
                     href={social.href}
                     className="p-3 bg-white/5 rounded-lg hover:bg-primary/20 transition-colors"
                     aria-label={social.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
                     <social.icon className="w-6 h-6" />
                   </a>
@@ -371,6 +402,7 @@ export default function Contact() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   className="w-full h-96"
+                  title="Google Map"
                 ></iframe>
               </div>
             </div>

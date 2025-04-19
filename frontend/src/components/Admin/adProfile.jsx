@@ -58,7 +58,7 @@ const AdProfile = () => {
                 <form onSubmit={handleSubmit} className="space-y-4 flex flex-col items-center justify-center">
                     <div className="flex justify-center">
                         <img
-                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+                            src="../assets/user.png"
                             alt="profile"
                             className="w-24 h-24 rounded-full object-cover cursor-pointer"
                         />

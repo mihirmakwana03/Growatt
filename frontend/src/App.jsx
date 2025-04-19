@@ -56,8 +56,7 @@ function App() {
           <Route path="/pricingcomponent" element={<PricingComponent />} />
         </Routes>
       </main>
-      {/* {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && <Footer />} */}
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isLoginRoute && !isResetPasswordRoute && !isLogout && <Footer />}
     </div>
   );
 }

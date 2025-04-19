@@ -34,7 +34,7 @@ const Login = () => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(formData),
-          credentials: 'include' // 🔥 Important: This allows cookies to be sent and received
+          credentials: 'include'
         });
       } catch (networkError) {
         console.error('Network error:', networkError);
@@ -63,20 +63,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
-      <div className="bg-[#1e293b] shadow-2xl rounded-2xl p-8 w-full max-w-md text-white">
+    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] px-2 sm:px-4">
+      <div className="bg-[#1e293b] shadow-2xl rounded-2xl p-4 sm:p-8 w-full max-w-xs sm:max-w-md text-white">
         <div className="flex flex-col items-center mb-6">
-          <img src="/assets/logo-nav.png" className="w-auto h-20 mb-4" alt="logo" />
-          <p className="text-slate-400">Please log in to your account</p>
+          <img src="/assets/logo-nav.png" className="w-auto h-auto mb-4" alt="logo" />
+          <p className="text-slate-400 text-center text-sm sm:text-base">Please log in to your account</p>
           {error && (
-            <div className="mb-4 text-red-500 text-sm">
+            <div className="mb-4 text-red-500 text-sm text-center">
               {error}
             </div>
           )}
         </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300">
+            <label htmlFor="username" className="block text-sm font-medium text-slate-300">
               Username
             </label>
             <input
@@ -85,7 +85,7 @@ const Login = () => {
               placeholder="Enter your username"
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-4 py-2 bg-[#0f172a] border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 sm:px-4 sm:py-2 bg-[#0f172a] border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             />
           </div>
           <div>
@@ -98,17 +98,17 @@ const Login = () => {
               placeholder="Enter your password"
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-4 py-2 bg-[#0f172a] border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 sm:px-4 sm:py-2 bg-[#0f172a] border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             />
           </div>
           <button
             type="submit"
-            className="uppercase w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition-all duration-300"
+            className="uppercase w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 transition-all duration-300 text-sm sm:text-base"
           >
             Log In
           </button>
         </form>
-        <div className="mt-6 text-center text-sm text-slate-400">
+        <div className="mt-6 text-center text-xs sm:text-sm text-slate-400">
           <p>
             Forgot your password?{" "}
             <a

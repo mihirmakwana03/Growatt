@@ -19,6 +19,7 @@ const authRoutes = require("./routes/auth.route.js");
 const cookieParser = require("cookie-parser");
 const teamStoriesRoutes = require("./routes/TeamStories.js");
 const pricingRoutes = require("./routes/pricingRoutes.js");
+const contactInfoRoutes = require("./routes/contactInfoRoutes.js");
 
 
 const app = express();
@@ -91,6 +92,7 @@ app.use("/uploadspdf", express.static(path.join(__dirname, "uploadspdf")));
 app.use("/email", emailRoutes);  // ✅ Mount email routes
 app.use("/contact", contactRoutes);  // ✅ Mount contact routes
 app.use('/contactuploadsimg', express.static(path.join(__dirname, 'public', 'contactuploadsimg')));
+app.use("/contactinfo", contactInfoRoutes); // Contact info routes
 app.use("/uploadsimg", express.static(path.join(__dirname, "uploadsimg")));
 app.use("/customers", customerRoutes);  // ✅ Routes start with "/customers"
 app.use("/testimonials", testimonialRoutes);

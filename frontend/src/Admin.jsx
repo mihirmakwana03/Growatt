@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./components/MainLayout";
-import AdCareer from "./components/Admin/adcareer";
+import AdCareer from "./components/Admin/AdCareer";
 import Portfolio from "./components/Admin/AdPortfolio";
 import Service from "./components/Admin/AdService";
 import Dashboard from "./components/Admin/AdDashboard";
@@ -15,6 +15,7 @@ import Signup from "./components/Admin/signup";
 import Profile from "./components/Admin/adProfile";
 import TeamStories from "./components/Admin/TeamStories";
 import PricingListForm from "./components/Admin/pricingList";
+import AdminContactForm from "./components/Admin/AdminContactForm";
 
 const Admin = () => {
   return (
@@ -35,6 +36,7 @@ const Admin = () => {
         <Route path="dashboard" element={<AdDashboard />} />
         <Route path="team" element={<AddTeamMember />} />
         <Route path="teamstories" element={<TeamStories />} />
+        <Route path="contactinfo" element={<AdminContactForm />} />
       </Routes>
     </MainLayout>
   );
